@@ -9,8 +9,10 @@ set nocompatible                          " be iMproved, required
    set nobackup                              " Do not keep a backup file
    set viminfo^=%                            " Remember info about open buffers on close
    set tags=tags                             "http://vim.wikia.com/wiki/Single_tags_file_for_a_source_tree
-   set formatoptions-=cro
-   set formatoptions+=j
+   if has( "formatoptions" )
+      set formatoptions-=cro
+      "set formatoptions+=j
+   endif
    "set path+=.\**                           "When not on windows: set path=$PWD/**
    " }}}
 " Colors {{{
@@ -64,7 +66,9 @@ set nocompatible                          " be iMproved, required
    set wildmenu                              " Use wildmenu for tab completion
    set wildmode=longest:full
    set wildignore+=*.o,*.bak,*.swp,*~,*.pyc,*.pbout,*.cout   " Ignore compiled files
-   set wildignorecase
+   if has( "wildignorecase" )
+      set wildignorecase
+   endif
 
    " Use Ag for grep
    if executable('ag')
