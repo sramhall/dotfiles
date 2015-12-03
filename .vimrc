@@ -9,6 +9,7 @@ set nocompatible                          " be iMproved, required
    set nobackup                              " Do not keep a backup file
    set viminfo^=%                            " Remember info about open buffers on close
    set tags=tags                             "http://vim.wikia.com/wiki/Single_tags_file_for_a_source_tree
+   set autowriteall
    if has( "formatoptions" )
       set formatoptions-=cro
       "set formatoptions+=j
@@ -105,7 +106,7 @@ set nocompatible                          " be iMproved, required
          autocmd FileChangedShell * echo "Warning: File changed on disk"
 
          " Always strip trailing whitespace when editing a file
-         autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
+         " autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
 
          " For all text files set 'textwidth' to 78 characters.
          autocmd FileType text setlocal textwidth=78
@@ -197,6 +198,10 @@ set nocompatible                          " be iMproved, required
 
    " File switch mappings
    nnoremap <leader>fs :FSHere<CR>
+
+   " Navigate through buffer list
+   nnoremap <leader>n :bnext<CR>
+   nnoremap <leader>p :bprevious<CR>
 
    " Tagbar toggle for viewing organized tag list of current buffer
    nnoremap <leader>tb :TagbarToggle<CR>
