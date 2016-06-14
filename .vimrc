@@ -14,6 +14,15 @@ set nocompatible                          " be iMproved, required
       set formatoptions-=cro
       "set formatoptions+=j
    endif
+
+   "autocompletion
+   set completeopt=longest,menuone
+   inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+   inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
+     \ '<C-n><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
+   inoremap <expr> <M-,> pumvisible() ? '<C-n>' :
+     \ '<C-x><C-o><C-n><C-p><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
+
    "set path+=.\**                           "When not on windows: set path=$PWD/**
    " }}}
 " Colors {{{
@@ -50,10 +59,12 @@ set nocompatible                          " be iMproved, required
    set lines=50                              " GUI 50 lines long
    set columns=100                           " GUI 100 columns wide
    set nowrap                                " Don't wrap lines
-   set scrolloff=7                           " Scroll screen when cursor 7 from beg/end
+   " use ctrl-e, ctrl-y instead
+   "set scrolloff=7                           " Scroll screen when cursor 7 from beg/end
    set visualbell                            " don't beep
    set noerrorbells                          " don't beep
-   set guioptions-=r                         " No scrollbar
+   set guioptions-=R                         " No scrollbar
+   set guioptions-=L                         " No scrollbar
    set diffopt=vertical,filler               " When opening vimdiff always split vertical and show filler lines for missing text
    set backspace=indent,eol,start            " backspacing over everything in insert mode
    set laststatus=2
@@ -86,8 +97,10 @@ set nocompatible                          " be iMproved, required
    set modelines=2                           " Ensure that modeline at bottom of file will enable folding in vimrc if it is opened later for editing
    set foldenable                            " Use folding
    set foldmethod=syntax                     " Use language syntax for folding
-   set foldlevelstart=10                     " Don't fold anything when opening file
-   set foldnestmax=10                        " Don't fold anything when opening file
+   set foldlevelstart=0
+   set foldnestmax=3
+   " Filetype specific fold behavior under 'AutoGroups'
+   set foldtext=MyFoldText()
    " }}}
 " AutoGroups {{{
    " Only do this part when compiled with support for autocommands.
@@ -102,11 +115,17 @@ set nocompatible                          " be iMproved, required
          autocmd Filetype cpp setlocal tabstop=3 softtabstop=3 shiftwidth=3
          autocmd Filetype c setlocal tabstop=3 softtabstop=3 shiftwidth=3
 
+         " filetype specific folding
+         autocmd Filetype python setlocal foldmethod=indent foldlevelstart=0
+
+         " manual fold mode when editing so folds below cursor don't open
+         autocmd InsertEnter * if !exists('w:last_fdm') | let w:last_fdm=&foldmethod | setlocal foldmethod=manual | endif
+         autocmd InsertLeave,WinLeave * if exists('w:last_fdm') | let &l:foldmethod=w:last_fdm | unlet w:last_fdm | endif
 
          autocmd FileChangedShell * echo "Warning: File changed on disk"
 
          " Always strip trailing whitespace when editing a file
-         " autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
+         autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
 
          " For all text files set 'textwidth' to 78 characters.
          autocmd FileType text setlocal textwidth=78
@@ -137,6 +156,41 @@ set nocompatible                          " be iMproved, required
       call cursor(l, c)
    endfunction
 
+   " custom foldtext
+   function! MyFoldText()
+   let line = getline(v:foldstart)
+   if match( line, '^[ \t]*\(\/\*\|\/\/\)[*/\\]*[ \t]*$' ) == 0
+      let initial = substitute( line, '^\([ \t]\)*\(\/\*\|\/\/\)\(.*\)', '\1\2', '' )
+      let linenum = v:foldstart + 1
+      while linenum < v:foldend
+         let line = getline( linenum )
+         let comment_content = substitute( line, '^\([ \t\/\*]*\)\(.*\)$', '\2', 'g' )
+         if comment_content != ''
+         break
+         endif
+         let linenum = linenum + 1
+      endwhile
+      let sub = initial . ' ' . comment_content
+   else
+      let sub = line
+      let startbrace = substitute( line, '^.*{[ \t]*$', '{', 'g')
+      if startbrace == '{'
+         let line = getline(v:foldend)
+         let endbrace = substitute( line, '^[ \t]*}\(.*\)$', '}', 'g')
+         if endbrace == '}'
+         let sub = sub.substitute( line, '^[ \t]*}\(.*\)$', '...}\1', 'g')
+         endif
+      endif
+   endif
+   let n = v:foldend - v:foldstart + 1
+   let info = " " . n . " lines"
+   let sub = sub . "                                                                                                                  "
+   let num_w = getwinvar( 0, '&number' ) * getwinvar( 0, '&numberwidth' )
+   let fold_w = getwinvar( 0, '&foldcolumn' )
+   let sub = strpart( sub, 0, winwidth(0) - strlen( info ) - num_w - fold_w - 1 )
+   return sub . info
+   endfunction
+
    " Convenient command to see the difference between the current buffer and
    " the file it was loaded from, thus the changes you made. Only define it
    " when not defined already.
@@ -165,10 +219,15 @@ set nocompatible                          " be iMproved, required
    " let Vundle manage Vundle, required
    Plugin 'VundleVim/Vundle.vim'
    Plugin 'kien/ctrlp.vim'
-   "Plugin 'Valloric/YouCompleteMe'
    Plugin 'derekwyatt/vim-fswitch'
    Plugin 'majutsushi/tagbar'
-   "Plugin 'scrooloose/syntastic'
+   Plugin 'thinca/vim-visualstar'
+   "Plugin 'vim-scripts/AutoComplPop'
+   Plugin 'davidhalter/jedi-vim'
+   Plugin 'scrooloose/nerdtree'
+
+   " Haven't tried these yet
+   "Plugin 'vim-scripts/TagHighlight'
    "Plugin 'godlygeek/tabular'
    "Plugin 'tomtom/tcomment_vim'
    "Plugin 'ton/vim-bufsurf'
@@ -187,7 +246,11 @@ set nocompatible                          " be iMproved, required
    nnoremap Y y$
 
    " Remap space to fold/unfold section
-   nnoremap <space> za
+   nnoremap <space> zA
+
+   " find next/prev _
+   nnoremap - f_
+   nnoremap _ F_
 
    " Disable highlight
    nnoremap <silent> <leader><cr> :noh<cr>
@@ -205,6 +268,7 @@ set nocompatible                          " be iMproved, required
 
    " Tagbar toggle for viewing organized tag list of current buffer
    nnoremap <leader>tb :TagbarToggle<CR>
+   nnoremap <leader>tbp :TagbarTogglePause<CR>
 
    " Edit/reload .vimrc
    nnoremap <silent> <leader>ev :e $MYVIMRC<CR>
@@ -216,6 +280,10 @@ set nocompatible                          " be iMproved, required
    nnoremap <C-l> <C-w><C-l>
    nnoremap <C-h> <C-w><C-h>
 
+   " Switch to vertical or horizontal
+   nnoremap <leader>wv <C-w>t<C-w>H
+   nnoremap <leader>wh <C-w>t<C-w>K
+
    " Quickly change height and width
    nnoremap <leader>wi :vertical resize +20<CR>
    nnoremap <leader>wd :vertical resize -20<CR>
@@ -225,6 +293,8 @@ set nocompatible                          " be iMproved, required
    " Open/close quickfix
    nnoremap <leader>qo :copen<CR>
    nnoremap <leader>qc :cclose<CR>
+   nnoremap <leader>lo :lopen<CR>
+   nnoremap <leader>lc :lclose<CR>
 
    " bind \ (backward slash) to grep shortcut
    if !exists(":Ag")
@@ -238,21 +308,19 @@ set nocompatible                          " be iMproved, required
    " Open ctrlp
    let g:ctrlp_map = '<c-p>'
    let g:ctrlp_cmd = 'CtrlP'
+
+   " Nerdtree
+   nnoremap <leader>nt :NERDTreeToggle<CR>
+
+
    " }}}
 " Plugins {{{
-   " Syntastic
-   " set statusline+=%#warningmsg#
-   " set statusline+=%{SyntasticStatuslineFlag()}
-   " set statusline+=%*
-
-   " let g:syntastic_always_populate_loc_list = 1
-   " let g:syntastic_auto_loc_list = 1
-   " let g:syntastic_check_on_open = 1
-   " let g:syntastic_check_on_wq = 0
-
    " CtrlP
-   " Root directory will be manually set in local config
-   let g:ctrlp_working_path_mode = 0
+   let g:ctrlp_working_path_mode = 0      " Root directory will be manually set in local config
+   let g:ctrlp_by_filename = 1            " Search by filename by default
+
+   " Tagbar
+   let g:tagbar_autofocus = 1
    " }}}
 
 " *****************************************************************************
