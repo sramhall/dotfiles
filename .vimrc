@@ -10,6 +10,7 @@ set nocompatible                          " be iMproved, required
    set viminfo^=%                            " Remember info about open buffers on close
    set tags=tags                             "http://vim.wikia.com/wiki/Single_tags_file_for_a_source_tree
    set autowriteall
+   set nrformats=alpha,hex
    if has( "formatoptions" )
       set formatoptions-=cro
       "set formatoptions+=j
@@ -98,7 +99,7 @@ set nocompatible                          " be iMproved, required
    set foldenable                            " Use folding
    set foldmethod=syntax                     " Use language syntax for folding
    set foldlevelstart=0
-   set foldnestmax=3
+   set foldnestmax=9
    " Filetype specific fold behavior under 'AutoGroups'
    set foldtext=MyFoldText()
    " }}}
@@ -223,8 +224,10 @@ set nocompatible                          " be iMproved, required
    Plugin 'majutsushi/tagbar'
    Plugin 'thinca/vim-visualstar'
    "Plugin 'vim-scripts/AutoComplPop'
-   Plugin 'davidhalter/jedi-vim'
+   "Plugin 'davidhalter/jedi-vim'
    Plugin 'scrooloose/nerdtree'
+   "Plugin 'Valloric/YouCompleteMe'
+   Plugin 'tpope/vim-commentary'
 
    " Haven't tried these yet
    "Plugin 'vim-scripts/TagHighlight'
@@ -296,6 +299,9 @@ set nocompatible                          " be iMproved, required
    nnoremap <leader>lo :lopen<CR>
    nnoremap <leader>lc :lclose<CR>
 
+   " If popup menu, make newline when enter is pressed
+   inoremap <expr> <CR>       pumvisible() ? "\<C-e>\<CR>" : "\<CR>"
+
    " bind \ (backward slash) to grep shortcut
    if !exists(":Ag")
       command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
@@ -304,10 +310,6 @@ set nocompatible                          " be iMproved, required
 
    " bind K to grep word under cursor
    nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
-
-   " Open ctrlp
-   let g:ctrlp_map = '<c-p>'
-   let g:ctrlp_cmd = 'CtrlP'
 
    " Nerdtree
    nnoremap <leader>nt :NERDTreeToggle<CR>
@@ -318,9 +320,21 @@ set nocompatible                          " be iMproved, required
    " CtrlP
    let g:ctrlp_working_path_mode = 0      " Root directory will be manually set in local config
    let g:ctrlp_by_filename = 1            " Search by filename by default
+   let g:ctrlp_map = '<c-p>'
+   let g:ctrlp_cmd = 'CtrlP'
+   let g:ctrlp_extensions = ['line']
 
    " Tagbar
    let g:tagbar_autofocus = 1
+
+   let g:ycm_server_python_interpreter = 'C:\Python35-32\python.exe'
+   "let g:ycm_always_populate_location_list = 1
+   let g:ycm_confirm_extra_conf = 0
+   "let g:ycm_filepath_completion_use_working_dir = 1
+   let g:ycm_show_diagnostics_ui = 0
+
+   " Commentary
+   autocmd Filetype cpp setl commentstring=//%s
    " }}}
 
 " *****************************************************************************
