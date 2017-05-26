@@ -5,16 +5,15 @@ set nocompatible                          " be iMproved, required
 " *****************************************************************************
 
 " VIM Functional {{{
-   set history=50                            " Keep 50 lines of command line history
+   "set history=50                            " Keep 50 lines of command line history
    set nobackup                              " Do not keep a backup file
    set viminfo^=%                            " Remember info about open buffers on close
    set tags=tags                             "http://vim.wikia.com/wiki/Single_tags_file_for_a_source_tree
-   set autowriteall
-   set nrformats=alpha,hex
-   if has( "formatoptions" )
-      set formatoptions-=cro
-      "set formatoptions+=j
-   endif
+   "set autowriteall
+   set nrformats=alpha,hex                   " for incrementing with CTRL-A, CTRL-X
+   " if has( "formatoptions" )
+      " set formatoptions-=cro            "set formatoptions+=j
+   " endif
 
    "autocompletion
    set completeopt=longest,menuone
@@ -43,14 +42,12 @@ set nocompatible                          " be iMproved, required
    set autoindent                            " Copy indent from current line when creating new line
    set copyindent                            " Copy indent from previous line
    set shiftround                            " Round indent value to multiples of shiftwidth
-   " set smarttab
    set listchars=eol:$,tab:>-,trail:~,extends:>,precedes:<
    " }}}
 " UI Config {{{
    set ttyfast                               " Speed redrawing by transferring more characters to redraw
    set lazyredraw                            " Don't auto redraw screen when executing macros, improves performance
    set number                                " Show line numbers
-   set relativenumber                        " Always show line numbers as relative
    set showcmd                               " Show command as typed in status bar
    set hidden                                " hide buffers instead of closing them
    set splitbelow                            " Split below by default
@@ -60,16 +57,13 @@ set nocompatible                          " be iMproved, required
    set lines=50                              " GUI 50 lines long
    set columns=100                           " GUI 100 columns wide
    set nowrap                                " Don't wrap lines
-   " use ctrl-e, ctrl-y instead
-   "set scrolloff=7                           " Scroll screen when cursor 7 from beg/end
    set visualbell                            " don't beep
    set noerrorbells                          " don't beep
    set guioptions-=R                         " No scrollbar
    set guioptions-=L                         " No scrollbar
    set diffopt=vertical,filler               " When opening vimdiff always split vertical and show filler lines for missing text
    set backspace=indent,eol,start            " backspacing over everything in insert mode
-   set laststatus=2
-   " set statusline="%<%f\ %h%m%r%{fugitive#statusline()}%=%-14.(%l,%c%V%)\ %P"
+   set laststatus=2                          " always show the status bar
    " }}}
 " Searching, Wildmode {{{
    set smartcase                             " case-insens if search is lowercase, case-sens otherwise
@@ -97,11 +91,10 @@ set nocompatible                          " be iMproved, required
 " Folding {{{
    set modelines=2                           " Ensure that modeline at bottom of file will enable folding in vimrc if it is opened later for editing
    set foldenable                            " Use folding
-   set foldmethod=syntax                     " Use language syntax for folding
+   set foldmethod=syntax                     " Use language syntax for folding - Filetype specific fold behavior under 'AutoGroups'
    set foldlevelstart=0
-   set foldnestmax=9
-   " Filetype specific fold behavior under 'AutoGroups'
-   set foldtext=MyFoldText()
+   set foldnestmax=99
+   "set foldtext=MyFoldText()
    " }}}
 " AutoGroups {{{
    " Only do this part when compiled with support for autocommands.
@@ -115,6 +108,7 @@ set nocompatible                          " be iMproved, required
          autocmd Filetype python setlocal tabstop=4 softtabstop=4 shiftwidth=4
          autocmd Filetype cpp setlocal tabstop=3 softtabstop=3 shiftwidth=3
          autocmd Filetype c setlocal tabstop=3 softtabstop=3 shiftwidth=3
+         autocmd Filetype json setlocal tabstop=4 softtabstop=4 shiftwidth=4
 
          " filetype specific folding
          autocmd Filetype python setlocal foldmethod=indent foldlevelstart=0
@@ -224,10 +218,13 @@ set nocompatible                          " be iMproved, required
    Plugin 'majutsushi/tagbar'
    Plugin 'thinca/vim-visualstar'
    "Plugin 'vim-scripts/AutoComplPop'
-   "Plugin 'davidhalter/jedi-vim'
+   Plugin 'davidhalter/jedi-vim'
    Plugin 'scrooloose/nerdtree'
-   "Plugin 'Valloric/YouCompleteMe'
+   Plugin 'Valloric/YouCompleteMe'
    Plugin 'tpope/vim-commentary'
+   Plugin 'tmhedberg/SimpylFold'      " Improved Python folding
+   Plugin 'Konfekt/FastFold'
+   Plugin 'tpope/vim-unimpaired'
 
    " Haven't tried these yet
    "Plugin 'vim-scripts/TagHighlight'
@@ -242,8 +239,10 @@ set nocompatible                          " be iMproved, required
    " }}}
 " Custom Mappings {{{
    " New line above/below, stay in normal mode
-   nnoremap <S-Enter> O<Esc>
-   nnoremap <CR> o<Esc>
+   " nnoremap <S-Enter> O<Esc>
+   " nnoremap <CR> o<Esc>
+   " in case original <CR> behavior is needed
+   nnoremap <leader><CR> <CR>
 
    " Make Y yank the rest of the line (yy yankes the line)
    nnoremap Y y$
@@ -256,7 +255,7 @@ set nocompatible                          " be iMproved, required
    nnoremap _ F_
 
    " Disable highlight
-   nnoremap <silent> <leader><cr> :noh<cr>
+   nnoremap <silent> <leader>\ :noh<cr>
 
    " History sensitive buffer jumping
    nnoremap <leader><C-o> :BufSurfBack<CR>
@@ -299,6 +298,12 @@ set nocompatible                          " be iMproved, required
    nnoremap <leader>lo :lopen<CR>
    nnoremap <leader>lc :lclose<CR>
 
+   " Add/delete to/from quickfix or location list
+   nnoremap <leader>qa :call setqflist([{'filename':expand('%'), 'lnum':line('.'), 'text':getline('.')}], 'a')<CR>                  " add current line to quickfix list
+   nnoremap <leader>la :call setloclist(winnr(), [{'filename':expand('%'), 'lnum':line('.'), 'text':getline('.')}], 'a')<CR>        " add current line to location list
+   nnoremap <leader>qd :call setqflist(getloclist()[0:line('.')-2] + getloclist()[line('.'):line('$')])<CR>                         " delete cursor line from quickfix list
+   nnoremap <leader>ld :call setloclist(winnr(), getloclist(winnr())[0:line('.')-2] + getloclist(winnr())[line('.'):line('$')])<CR> " delete cursor line from location list
+
    " If popup menu, make newline when enter is pressed
    inoremap <expr> <CR>       pumvisible() ? "\<C-e>\<CR>" : "\<CR>"
 
@@ -335,6 +340,20 @@ set nocompatible                          " be iMproved, required
 
    " Commentary
    autocmd Filetype cpp setl commentstring=//%s
+
+   " YCM
+   let g:ycm_filetype_specific_completion_to_disable = {
+            \ 'cpp': 1,
+            \ 'c': 1
+            \}
+
+   let g:ycm_enable_diagnostic_signs = 0
+   let g:ycm_show_diagnostics_ui = 0
+   let g:ycm_autoclose_preview_window_after_completion = 1
+   let g:ycm_complete_in_comments = 1
+   let g:ycm_collect_identifiers_from_tags_files = 1
+   noremap <leader>gd :YcmCompleter GoToDefinitionElseDeclaration<CR>
+
    " }}}
 
 " *****************************************************************************
