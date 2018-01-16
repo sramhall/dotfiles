@@ -9,11 +9,24 @@ set nocompatible                          " be iMproved, required
    set nobackup                              " Do not keep a backup file
    set viminfo^=%                            " Remember info about open buffers on close
    set tags=tags                             "http://vim.wikia.com/wiki/Single_tags_file_for_a_source_tree
-   "set autowriteall
+   set autoread
    set nrformats=alpha,hex                   " for incrementing with CTRL-A, CTRL-X
+   " set hidden                                " hide buffers instead of closing them
    " if has( "formatoptions" )
       " set formatoptions-=cro            "set formatoptions+=j
    " endif
+
+   "undo persistence
+   if has('persistent_undo')
+      let undopath = expand('$HOME') . 'vimfiles\undo'
+      if !isdirectory(undopath)
+         call mkdir(undopath)
+      endif
+      let &undodir=undopath      " set undodir=H:\vimfiles\undo
+      set undofile
+      set undolevels=1000
+      set undoreload=10000
+   endif
 
    "autocompletion
    set completeopt=longest,menuone
@@ -26,7 +39,7 @@ set nocompatible                          " be iMproved, required
    "set path+=.\**                           "When not on windows: set path=$PWD/**
    " }}}
 " Colors {{{
-   set t_Co=256
+   " set t_Co=256
    syntax on                                 " Switch syntax highlighting on
    colorscheme desert                        " Set color scheme
 
@@ -42,31 +55,32 @@ set nocompatible                          " be iMproved, required
    set autoindent                            " Copy indent from current line when creating new line
    set copyindent                            " Copy indent from previous line
    set shiftround                            " Round indent value to multiples of shiftwidth
-   set listchars=eol:$,tab:>-,trail:~,extends:>,precedes:<
+   set listchars=eol:$,tab:>-,trail:~,extends:>,precedes:<     " for :set list
    " }}}
 " UI Config {{{
    set ttyfast                               " Speed redrawing by transferring more characters to redraw
    set lazyredraw                            " Don't auto redraw screen when executing macros, improves performance
    set number                                " Show line numbers
    set showcmd                               " Show command as typed in status bar
-   set hidden                                " hide buffers instead of closing them
    set splitbelow                            " Split below by default
    set ruler                                 " show the cursor position all the time
    set showmatch                             " show matching brackets
-   set gfn=Consolas:h9:cANSI                 " set font
-   set lines=50                              " GUI 50 lines long
-   set columns=100                           " GUI 100 columns wide
+   set guifont=Consolas:h9:cANSI             " set font
+   " set lines=50                              " GUI 50 lines long
+   " set columns=100                           " GUI 100 columns wide
    set nowrap                                " Don't wrap lines
    set visualbell                            " don't beep
    set noerrorbells                          " don't beep
-   set guioptions-=R                         " No scrollbar
-   set guioptions-=L                         " No scrollbar
+   set guioptions-=R                         " no scrollbars
+   set guioptions-=L                         " no scrollbars
+   set guioptions-=r                         " no scrollbars
+   set guioptions-=l                         " no scrollbars
    set diffopt=vertical,filler               " When opening vimdiff always split vertical and show filler lines for missing text
    set backspace=indent,eol,start            " backspacing over everything in insert mode
    set laststatus=2                          " always show the status bar
    " }}}
 " Searching, Wildmode {{{
-   set smartcase                             " case-insens if search is lowercase, case-sens otherwise
+   set smartcase                             " case-insensitive if search is lowercase, case-sensitive otherwise
    set ignorecase                            " ignore case when searching
    set hlsearch                              " highlight all search results
    set incsearch                             " do incremental searching
@@ -80,12 +94,6 @@ set nocompatible                          " be iMproved, required
    " Use Ag for grep
    if executable('ag')
       set grepprg=ag\ --nogroup\ --nocolor
-
-      " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-      let g:ctrlp_user_command = 'ag -l --nocolor -g "" %s'
-
-      " ag is fast enough that CtrlP doesn't need to cache
-      let g:ctrlp_use_caching = 0
    endif
    " }}}
 " Folding {{{
@@ -94,7 +102,6 @@ set nocompatible                          " be iMproved, required
    set foldmethod=syntax                     " Use language syntax for folding - Filetype specific fold behavior under 'AutoGroups'
    set foldlevelstart=0
    set foldnestmax=99
-   "set foldtext=MyFoldText()
    " }}}
 " AutoGroups {{{
    " Only do this part when compiled with support for autocommands.
@@ -114,10 +121,8 @@ set nocompatible                          " be iMproved, required
          autocmd Filetype python setlocal foldmethod=indent foldlevelstart=0
 
          " manual fold mode when editing so folds below cursor don't open
-         autocmd InsertEnter * if !exists('w:last_fdm') | let w:last_fdm=&foldmethod | setlocal foldmethod=manual | endif
-         autocmd InsertLeave,WinLeave * if exists('w:last_fdm') | let &l:foldmethod=w:last_fdm | unlet w:last_fdm | endif
-
-         autocmd FileChangedShell * echo "Warning: File changed on disk"
+         " autocmd InsertEnter * if !exists('w:last_fdm') | let w:last_fdm=&foldmethod | setlocal foldmethod=manual | endif
+         " autocmd InsertLeave,WinLeave * if exists('w:last_fdm') | let &l:foldmethod=w:last_fdm | unlet w:last_fdm | endif
 
          " Always strip trailing whitespace when editing a file
          autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
@@ -151,41 +156,6 @@ set nocompatible                          " be iMproved, required
       call cursor(l, c)
    endfunction
 
-   " custom foldtext
-   function! MyFoldText()
-   let line = getline(v:foldstart)
-   if match( line, '^[ \t]*\(\/\*\|\/\/\)[*/\\]*[ \t]*$' ) == 0
-      let initial = substitute( line, '^\([ \t]\)*\(\/\*\|\/\/\)\(.*\)', '\1\2', '' )
-      let linenum = v:foldstart + 1
-      while linenum < v:foldend
-         let line = getline( linenum )
-         let comment_content = substitute( line, '^\([ \t\/\*]*\)\(.*\)$', '\2', 'g' )
-         if comment_content != ''
-         break
-         endif
-         let linenum = linenum + 1
-      endwhile
-      let sub = initial . ' ' . comment_content
-   else
-      let sub = line
-      let startbrace = substitute( line, '^.*{[ \t]*$', '{', 'g')
-      if startbrace == '{'
-         let line = getline(v:foldend)
-         let endbrace = substitute( line, '^[ \t]*}\(.*\)$', '}', 'g')
-         if endbrace == '}'
-         let sub = sub.substitute( line, '^[ \t]*}\(.*\)$', '...}\1', 'g')
-         endif
-      endif
-   endif
-   let n = v:foldend - v:foldstart + 1
-   let info = " " . n . " lines"
-   let sub = sub . "                                                                                                                  "
-   let num_w = getwinvar( 0, '&number' ) * getwinvar( 0, '&numberwidth' )
-   let fold_w = getwinvar( 0, '&foldcolumn' )
-   let sub = strpart( sub, 0, winwidth(0) - strlen( info ) - num_w - fold_w - 1 )
-   return sub . info
-   endfunction
-
    " Convenient command to see the difference between the current buffer and
    " the file it was loaded from, thus the changes you made. Only define it
    " when not defined already.
@@ -214,36 +184,72 @@ set nocompatible                          " be iMproved, required
    " let Vundle manage Vundle, required
    Plugin 'VundleVim/Vundle.vim'
    Plugin 'kien/ctrlp.vim'
+      " {{{
+      let g:ctrlp_working_path_mode = 0      " Root directory will be manually set in local config
+      let g:ctrlp_by_filename = 1            " Search by filename by default
+      let g:ctrlp_map = '<c-p>'
+      let g:ctrlp_cmd = 'CtrlP'
+      let g:ctrlp_extensions = ['line']
+      if executable('ag')
+         " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+         let g:ctrlp_user_command = 'ag -l --nocolor -g "" %s'
+
+         " ag is fast enough that CtrlP doesn't need to cache
+         let g:ctrlp_use_caching = 0
+      endif
+      " }}}
    Plugin 'derekwyatt/vim-fswitch'
+      " {{{
+      nnoremap <leader>fs :FSHere<CR>
+      " }}}
    Plugin 'majutsushi/tagbar'
+      " {{{
+      nnoremap <leader>tb :TagbarToggle<CR>
+      nnoremap <leader>tbp :TagbarTogglePause<CR>
+      let g:tagbar_autofocus = 1
+      " }}}
    Plugin 'thinca/vim-visualstar'
-   "Plugin 'vim-scripts/AutoComplPop'
    Plugin 'davidhalter/jedi-vim'
    Plugin 'scrooloose/nerdtree'
    Plugin 'Valloric/YouCompleteMe'
+      " {{{
+      let g:ycm_autoclose_preview_window_after_completion = 1
+      let g:ycm_complete_in_comments = 1
+      let g:ycm_collect_identifiers_from_tags_files = 1
+      let g:ycm_confirm_extra_conf = 0
+      let g:ycm_show_diagnostics_ui = 0
+      let g:ycm_server_python_interpreter = 'C:\Python35-32\python.exe'
+      let g:ycm_filetype_specific_completion_to_disable = {'cpp': 1, 'c': 1}
+      " noremap <leader>gd :YcmCompleter GoToDefinitionElseDeclaration<CR>
+      " }}}
    Plugin 'tpope/vim-commentary'
+      " {{{
+      autocmd Filetype cpp setl commentstring=//%s
+      " }}}
    Plugin 'tmhedberg/SimpylFold'      " Improved Python folding
    Plugin 'Konfekt/FastFold'
    Plugin 'tpope/vim-unimpaired'
+   Plugin 'tpope/vim-dispatch'
 
    " Haven't tried these yet
-   "Plugin 'vim-scripts/TagHighlight'
+   "Plugin 'mbbill/undotree'  # \u is what Joe uses to show it
    "Plugin 'godlygeek/tabular'
-   "Plugin 'tomtom/tcomment_vim'
+   "pep8
    "Plugin 'ton/vim-bufsurf'
+      " {{{
+      " nnoremap <leader><C-o> :BufSurfBack<CR>
+      " nnoremap <leader><C-i> :BufSurfForward<CR>
+      " }}}
    "Plugin 'tpope/vim-surround'
+   "airline
+   "Plugin 'vim-scripts/TagHighlight'
+   "cross reference: opengrok or cscope
 
    " All of your Plugins must be added before the following line
    call vundle#end()                         " required
    filetype plugin indent on                 " required
    " }}}
 " Custom Mappings {{{
-   " New line above/below, stay in normal mode
-   " nnoremap <S-Enter> O<Esc>
-   " nnoremap <CR> o<Esc>
-   " in case original <CR> behavior is needed
-   nnoremap <leader><CR> <CR>
-
    " Make Y yank the rest of the line (yy yankes the line)
    nnoremap Y y$
 
@@ -256,21 +262,6 @@ set nocompatible                          " be iMproved, required
 
    " Disable highlight
    nnoremap <silent> <leader>\ :noh<cr>
-
-   " History sensitive buffer jumping
-   nnoremap <leader><C-o> :BufSurfBack<CR>
-   nnoremap <leader><C-i> :BufSurfForward<CR>
-
-   " File switch mappings
-   nnoremap <leader>fs :FSHere<CR>
-
-   " Navigate through buffer list
-   nnoremap <leader>n :bnext<CR>
-   nnoremap <leader>p :bprevious<CR>
-
-   " Tagbar toggle for viewing organized tag list of current buffer
-   nnoremap <leader>tb :TagbarToggle<CR>
-   nnoremap <leader>tbp :TagbarTogglePause<CR>
 
    " Edit/reload .vimrc
    nnoremap <silent> <leader>ev :e $MYVIMRC<CR>
@@ -304,6 +295,9 @@ set nocompatible                          " be iMproved, required
    nnoremap <leader>qd :call setqflist(getloclist()[0:line('.')-2] + getloclist()[line('.'):line('$')])<CR>                         " delete cursor line from quickfix list
    nnoremap <leader>ld :call setloclist(winnr(), getloclist(winnr())[0:line('.')-2] + getloclist(winnr())[line('.'):line('$')])<CR> " delete cursor line from location list
 
+   " Build tags
+   nnoremap <leader>ct :Dispatch ctags -R .<CR>
+
    " If popup menu, make newline when enter is pressed
    inoremap <expr> <CR>       pumvisible() ? "\<C-e>\<CR>" : "\<CR>"
 
@@ -319,40 +313,6 @@ set nocompatible                          " be iMproved, required
    " Nerdtree
    nnoremap <leader>nt :NERDTreeToggle<CR>
 
-
-   " }}}
-" Plugins {{{
-   " CtrlP
-   let g:ctrlp_working_path_mode = 0      " Root directory will be manually set in local config
-   let g:ctrlp_by_filename = 1            " Search by filename by default
-   let g:ctrlp_map = '<c-p>'
-   let g:ctrlp_cmd = 'CtrlP'
-   let g:ctrlp_extensions = ['line']
-
-   " Tagbar
-   let g:tagbar_autofocus = 1
-
-   let g:ycm_server_python_interpreter = 'C:\Python35-32\python.exe'
-   "let g:ycm_always_populate_location_list = 1
-   let g:ycm_confirm_extra_conf = 0
-   "let g:ycm_filepath_completion_use_working_dir = 1
-   let g:ycm_show_diagnostics_ui = 0
-
-   " Commentary
-   autocmd Filetype cpp setl commentstring=//%s
-
-   " YCM
-   let g:ycm_filetype_specific_completion_to_disable = {
-            \ 'cpp': 1,
-            \ 'c': 1
-            \}
-
-   let g:ycm_enable_diagnostic_signs = 0
-   let g:ycm_show_diagnostics_ui = 0
-   let g:ycm_autoclose_preview_window_after_completion = 1
-   let g:ycm_complete_in_comments = 1
-   let g:ycm_collect_identifiers_from_tags_files = 1
-   noremap <leader>gd :YcmCompleter GoToDefinitionElseDeclaration<CR>
 
    " }}}
 
