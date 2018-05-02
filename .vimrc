@@ -99,9 +99,24 @@ set nocompatible                          " be iMproved, required
 " Folding {{{
    set modelines=2                           " Ensure that modeline at bottom of file will enable folding in vimrc if it is opened later for editing
    set foldenable                            " Use folding
-   set foldmethod=syntax                     " Use language syntax for folding - Filetype specific fold behavior under 'AutoGroups'
    set foldlevelstart=0
    set foldnestmax=99
+
+   if !exists("fold_auto_cmd")
+      let fold_auto_cmd = 1
+      let g:LargeFile = 5 * 1024 * 1024
+
+      augroup LargeFile
+         autocmd BufReadPre * let f=expand("<afile>") | if getfsize(f) > g:LargeFile | set foldmethod=indent |  else | set foldmethod=syntax | endif
+      augroup END
+
+"       if getfsize(expand("<afile>")) > 5 * 1024 * 1024
+"          set foldmethod=syntax                     " Use language syntax for folding - Filetype specific fold behavior under 'AutoGroups'
+"       else
+"          set foldmethod=indent
+      " endif
+   endif
+
    " }}}
 " AutoGroups {{{
    " Only do this part when compiled with support for autocommands.
