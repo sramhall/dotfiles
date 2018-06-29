@@ -18,11 +18,13 @@ set nocompatible                          " be iMproved, required
 
    "undo persistence
    if has('persistent_undo')
-      if has("unix")
-         let undopath = expand('$HOME') . '/.vim/undo'
-      else
+
+      if has( "win32" )
          let undopath = expand('$HOME') . 'vimfiles\undo'
+      else
+         let undopath = expand('$HOME') . '/.vim/undo'
       endif
+
       if !isdirectory(undopath)
          call mkdir(undopath)
       endif
@@ -69,11 +71,18 @@ set nocompatible                          " be iMproved, required
    set splitbelow                            " Split below by default
    set ruler                                 " show the cursor position all the time
    set showmatch                             " show matching brackets
-   if has("unix")
-      set guifont="Courier 10 Pitch 11"
+
+   " set font based on platform
+   if has( "macunix" )
+      set guifont=Consolas:h9:cANSI    " not tested
+   elseif has( "unix" )
+      set guifont="DejaVu Sans Mono 10"
+   elseif has( "win32" )
+      set guifont=Consolas:h9:cANSI
    else
-      set guifont=Consolas:h9:cANSI             " set font
+      set guifont=Consolas:h9:cANSI    " not tested
    endif
+
    " set lines=50                              " GUI 50 lines long
    " set columns=100                           " GUI 100 columns wide
    set nowrap                                " Don't wrap lines
