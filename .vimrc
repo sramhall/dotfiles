@@ -313,6 +313,16 @@ set nocompatible                          " be iMproved, required
    " Build tags
    nnoremap <leader>ct :Dispatch ctags -R .<CR>
 
+   " Convert brackets: ( asdf ), [ asdf ], { asdf }, < asdf > to (asdf), [asdf], {asdf}, <asdf>
+   nnoremap <leader>cb :%s/( /(/g<CR>
+                     \ :%s/ )/)/g<CR>
+                     \ :%s/\[ /[/g<CR>
+                     \ :%s/ ]/]/g<CR>
+                     \ :%s/{ /{/g<CR>
+                     \ :%s/ }/}/g<CR>
+                     \ :%s/< /</g<CR>
+                     \ :%s/ >/>/g<CR>
+
    " If popup menu, make newline when enter is pressed
    inoremap <expr> <CR>       pumvisible() ? "\<C-e>\<CR>" : "\<CR>"
 
