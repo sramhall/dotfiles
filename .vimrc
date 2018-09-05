@@ -8,7 +8,7 @@ set nocompatible                          " be iMproved, required
    "set history=50                            " Keep 50 lines of command line history
    set nobackup                              " Do not keep a backup file
    set viminfo^=%                            " Remember info about open buffers on close
-   set tags=tags                             "http://vim.wikia.com/wiki/Single_tags_file_for_a_source_tree
+   set tags=tags;                            " http://vim.wikia.com/wiki/Single_tags_file_for_a_source_tree
    set autoread
    set nrformats=alpha,hex                   " for incrementing with CTRL-A, CTRL-X
    " set hidden                                " hide buffers instead of closing them
@@ -85,6 +85,7 @@ set nocompatible                          " be iMproved, required
 
    " set lines=50                              " GUI 50 lines long
    " set columns=100                           " GUI 100 columns wide
+   set cursorline                            " Highlight the line of the cursor
    set nowrap                                " Don't wrap lines
    set visualbell                            " don't beep
    set noerrorbells                          " don't beep
@@ -329,6 +330,14 @@ set nocompatible                          " be iMproved, required
 
    " Build tags
    nnoremap <leader>ct :Dispatch ctags -R .<CR>
+
+   " Switch to directory of current file
+   nnoremap <leader>cd :cd %:p:h<CR>
+
+   " Neovim specific mappings
+   if has('nvim')    " or if exists(':tnoremap')
+      tnoremap <Esc> <C-\><C-n>     " allow escape to enter normal mode in terminal
+   endif
 
    " Convert brackets: ( asdf ), [ asdf ], { asdf }, < asdf > to (asdf), [asdf], {asdf}, <asdf>
    nnoremap <leader>cb :%s/( /(/g<CR>
