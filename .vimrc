@@ -103,7 +103,7 @@ set nocompatible                          " be iMproved, required
    set diffopt=vertical,filler               " When opening vimdiff always split vertical and show filler lines for missing text
    set backspace=indent,eol,start            " backspacing over everything in insert mode
    set laststatus=2                          " always show the status bar
-   set cmdheight=2                           " set command-line height. Helps avoid hit-enter prompts
+   " set cmdheight=2                           " set command-line height. Helps avoid hit-enter prompts
    set winaltkeys=no                         " don't allow key combination for window menus
    set winminheight=0                        " reduce to 0 so a window can be shrunk to only show the filename
    " set display=lastline                      " change the way text is displayed when a long line runs off the end of the screen
@@ -322,7 +322,7 @@ set nocompatible                          " be iMproved, required
    " }}}
 " Custom Mappings {{{
    let mapleader = "\\"       " for <leader>
-   let maplocalleader = "-"   " for <localleader>
+   " let maplocalleader = "-"   " for <localleader>
 
    inoremap jk <esc>
    inoremap <esc> <nop>
