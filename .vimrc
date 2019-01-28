@@ -12,6 +12,8 @@ set nocompatible                          " be iMproved, required
    set autoread
    set nrformats=alpha,hex                   " for incrementing with CTRL-A, CTRL-X
    " set hidden                                " hide buffers instead of closing them
+   set foldopen+=jump foldopen-=block foldopen-=hor   " open folds for jumps, but not for block or horizontal movement
+   set virtualedit=block                     " allow cursor to go where there is no character in visual block mode
    " if has( "formatoptions" )
       " set formatoptions-=cro            "set formatoptions+=j
    " endif
@@ -49,7 +51,7 @@ set nocompatible                          " be iMproved, required
    syntax on                                 " Switch syntax highlighting on
    colorscheme desert                        " Set color scheme
 
-   set colorcolumn=80                        " Set a margin at 80 lines
+   set colorcolumn=100                       " Set a margin at 100 lines
    highlight ColorColumn ctermbg=red ctermfg=white guibg=#592929
    " }}}
 " Whitespace / Indentation {{{
@@ -61,7 +63,11 @@ set nocompatible                          " be iMproved, required
    set autoindent                            " Copy indent from current line when creating new line
    set copyindent                            " Copy indent from previous line
    set shiftround                            " Round indent value to multiples of shiftwidth
+   set smarttab
    set listchars=eol:$,tab:>-,trail:~,extends:>,precedes:<     " for :set list
+   " if exists('+breakindent')
+   "    set breakindent showbreak=\ +          " indent when wrapping and add '+' to the front of the wrapped lines
+   " endif
    " }}}
 " UI Config {{{
    set ttyfast                               " Speed redrawing by transferring more characters to redraw
@@ -85,8 +91,9 @@ set nocompatible                          " be iMproved, required
 
    " set lines=50                              " GUI 50 lines long
    " set columns=100                           " GUI 100 columns wide
-   set cursorline                            " Highlight the line of the cursor
+   " set cursorline                            " Highlight the line of the cursor
    set nowrap                                " Don't wrap lines
+   set linebreak                             " uses chars in breakat when wrap is on
    set visualbell                            " don't beep
    set noerrorbells                          " don't beep
    set guioptions-=R                         " no scrollbars
@@ -96,6 +103,10 @@ set nocompatible                          " be iMproved, required
    set diffopt=vertical,filler               " When opening vimdiff always split vertical and show filler lines for missing text
    set backspace=indent,eol,start            " backspacing over everything in insert mode
    set laststatus=2                          " always show the status bar
+   set cmdheight=2                           " set command-line height. Helps avoid hit-enter prompts
+   set winaltkeys=no                         " don't allow key combination for window menus
+   set winminheight=0                        " reduce to 0 so a window can be shrunk to only show the filename
+   " set display=lastline                      " change the way text is displayed when a long line runs off the end of the screen
    " }}}
 " Searching, Wildmode {{{
    set smartcase                             " case-insensitive if search is lowercase, case-sensitive otherwise
@@ -104,7 +115,9 @@ set nocompatible                          " be iMproved, required
    set incsearch                             " do incremental searching
    set wildmenu                              " Use wildmenu for tab completion
    set wildmode=longest:full
-   set wildignore+=*.o,*.bak,*.swp,*~,*.pyc,*.pbout,*.cout   " Ignore compiled files
+   set wildignore+=tags,*.o,*.bak,*.swp,*~,*.pyc,*.pbout,*.cout   " Ignore some files
+   set scrolloff=1
+   set sidescrolloff=5
    if has( "wildignorecase" )
       set wildignorecase
    endif
@@ -149,6 +162,7 @@ set nocompatible                          " be iMproved, required
          autocmd Filetype cpp setlocal tabstop=3 softtabstop=3 shiftwidth=3
          autocmd Filetype c setlocal tabstop=3 softtabstop=3 shiftwidth=3
          autocmd Filetype json setlocal tabstop=4 softtabstop=4 shiftwidth=4
+         autocmd Filetype cs setlocal tabstop=4 softtabstop=4 shiftwidth=4
 
          " filetype specific folding
          autocmd Filetype python setlocal foldmethod=indent foldlevelstart=0
@@ -223,6 +237,7 @@ set nocompatible                          " be iMproved, required
       let g:ctrlp_map = '<c-p>'
       let g:ctrlp_cmd = 'CtrlP'
       let g:ctrlp_extensions = ['line']
+      let g:ctrlp_switch_buffer = 'e'        " only jump to an existing window if it's in the current tab
       if executable('ag')
          " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
          let g:ctrlp_user_command = 'ag -l --nocolor -g "" %s'
@@ -257,12 +272,37 @@ set nocompatible                          " be iMproved, required
       " }}}
    Plugin 'tpope/vim-commentary'
       " {{{
-      autocmd Filetype cpp setl commentstring=//%s
+      augroup commentary
+         autocmd!
+         autocmd Filetype cpp setl commentstring=//%s
+      augroup END
       " }}}
    Plugin 'tmhedberg/SimpylFold'      " Improved Python folding
    Plugin 'Konfekt/FastFold'
    Plugin 'tpope/vim-unimpaired'
    Plugin 'tpope/vim-dispatch'
+   Plugin 'tpope/vim-surround'
+   Plugin 'tpope/vim-airline'
+      " {{{
+      let g:airline#extensions#tagbar#enabled = 0     " this integration is broken with the git commit message, so disable it
+      " }}}
+   Plugin 'vim-airline/vim-airline-themes'
+      " {{{
+      let g:airline_theme='light'
+      " }}}
+   Plugin 'tpope/vim-capslock'
+
+   " The snippet engine
+   Plugin 'sirver/ultisnips'
+   " The snippet contents
+   Plugin 'honza/vim-snippets'
+      " {{{
+      let g:UltiSnipsExpandTrigger="<c-e>"
+      let g:UltiSnipsJumpForwardTrigger="<c-b>"
+      let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+      " }}}
+   Plugin 'tpope/vim-repeat'
+   Plugin 'nvie/vim-flake8'
 
    " Haven't tried these yet
    "Plugin 'mbbill/undotree'  # \u is what Joe uses to show it
@@ -273,8 +313,6 @@ set nocompatible                          " be iMproved, required
       " nnoremap <leader><C-o> :BufSurfBack<CR>
       " nnoremap <leader><C-i> :BufSurfForward<CR>
       " }}}
-   "Plugin 'tpope/vim-surround'
-   "airline
    "Plugin 'vim-scripts/TagHighlight'
    "cross reference: opengrok or cscope
 
@@ -283,6 +321,12 @@ set nocompatible                          " be iMproved, required
    filetype plugin indent on                 " required
    " }}}
 " Custom Mappings {{{
+   let mapleader = "\\"       " for <leader>
+   let maplocalleader = "-"   " for <localleader>
+
+   inoremap jk <esc>
+   inoremap <esc> <nop>
+
    " Make Y yank the rest of the line (yy yankes the line)
    nnoremap Y y$
 
@@ -294,10 +338,10 @@ set nocompatible                          " be iMproved, required
    nnoremap _ F_
 
    " Disable highlight
-   nnoremap <silent> <leader>\ :noh<cr>
+   nnoremap <silent> <leader>nh :noh<cr>
 
    " Edit/reload .vimrc
-   nnoremap <silent> <leader>ev :e $MYVIMRC<CR>
+   nnoremap <silent> <leader>ev :split $MYVIMRC<CR>
    nnoremap <silent> <leader>sv :so $MYVIMRC<CR>
 
    " Map window movement
@@ -354,7 +398,7 @@ set nocompatible                          " be iMproved, required
 
    " bind \ (backward slash) to grep shortcut
    if !exists(":Ag")
-      command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
+      command -nargs=+ -complete=file -bar Ag silent! grep! <args>|botright cwindow|redraw!
       nnoremap <leader>a :Ag -i<SPACE>
    endif
 
