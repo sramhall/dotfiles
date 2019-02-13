@@ -7,7 +7,7 @@ set nocompatible                          " be iMproved, required
 " VIM Functional {{{
    "set history=50                            " Keep 50 lines of command line history
    set nobackup                              " Do not keep a backup file
-   set viminfo^=%                            " Remember info about open buffers on close
+   " set viminfo^=%                            " Remember buffer list
    set tags=tags;                            " http://vim.wikia.com/wiki/Single_tags_file_for_a_source_tree
    set autoread
    set nrformats=alpha,hex                   " for incrementing with CTRL-A, CTRL-X
@@ -38,11 +38,6 @@ set nocompatible                          " be iMproved, required
 
    "autocompletion
    set completeopt=longest,menuone
-   inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-   inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
-     \ '<C-n><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
-   inoremap <expr> <M-,> pumvisible() ? '<C-n>' :
-     \ '<C-x><C-o><C-n><C-p><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
 
    "set path+=.\**                           "When not on windows: set path=$PWD/**
    " }}}
@@ -79,6 +74,8 @@ set nocompatible                          " be iMproved, required
    set showmatch                             " show matching brackets
 
    " set font based on platform
+   " if has("nvim")    " Also check per platform
+   "    set guifont=Consolas:h9:cANSI    " not tested
    if has( "macunix" )
       set guifont=Consolas:h9:cANSI    " not tested
    elseif has( "unix" )
@@ -91,7 +88,7 @@ set nocompatible                          " be iMproved, required
 
    " set lines=50                              " GUI 50 lines long
    " set columns=100                           " GUI 100 columns wide
-   " set cursorline                            " Highlight the line of the cursor
+   set cursorline                            " Highlight the line of the cursor - makes drawing slower
    set nowrap                                " Don't wrap lines
    set linebreak                             " uses chars in breakat when wrap is on
    set visualbell                            " don't beep
@@ -174,8 +171,12 @@ set nocompatible                          " be iMproved, required
          " Always strip trailing whitespace when editing a file
          autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
 
-         " For all text files set 'textwidth' to 78 characters.
-         autocmd FileType text setlocal textwidth=78
+         " For all text files set 'textwidth' to 98 characters.
+         autocmd FileType text setlocal textwidth=98
+
+         " Show the cursorline only in the current window
+         autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+         autocmd WinLeave * setlocal nocursorline
 
          " When editing a file, always jump to the last known cursor position.
          " Don't do it when the position is invalid or when inside an event handler
@@ -215,6 +216,7 @@ set nocompatible                          " be iMproved, required
    filetype off                              " required
 
    " set the runtime path to include Vundle and initialize
+   " TODO change this to have a has("nvim") specific setting
    if has( "macunix" )
       set rtp+=~/.vim/bundle/Vundle.vim
       call vundle#begin()
@@ -259,17 +261,24 @@ set nocompatible                          " be iMproved, required
    Plugin 'thinca/vim-visualstar'
    Plugin 'davidhalter/jedi-vim'
    Plugin 'scrooloose/nerdtree'
-   Plugin 'Valloric/YouCompleteMe'
-      " {{{
-      let g:ycm_autoclose_preview_window_after_completion = 1
-      let g:ycm_complete_in_comments = 1
-      let g:ycm_collect_identifiers_from_tags_files = 1
-      let g:ycm_confirm_extra_conf = 0
-      let g:ycm_show_diagnostics_ui = 0
-      let g:ycm_server_python_interpreter = 'C:\Python35-32\python.exe'
-      let g:ycm_filetype_specific_completion_to_disable = {'cpp': 1, 'c': 1}
-      " noremap <leader>gd :YcmCompleter GoToDefinitionElseDeclaration<CR>
-      " }}}
+   if has("nvim")
+      Plugin 'Shougo/deoplete.nvim'
+         " {{{
+         let g:deoplete#enable_at_startup = 1
+         " }}}
+   else
+      Plugin 'Valloric/YouCompleteMe'
+         " {{{
+         let g:ycm_autoclose_preview_window_after_completion = 1
+         let g:ycm_complete_in_comments = 1
+         let g:ycm_collect_identifiers_from_tags_files = 1
+         let g:ycm_confirm_extra_conf = 0
+         let g:ycm_show_diagnostics_ui = 0
+         let g:ycm_server_python_interpreter = 'C:\Python35-32\python.exe'
+         let g:ycm_filetype_specific_completion_to_disable = {'cpp': 1, 'c': 1}
+         " noremap <leader>gd :YcmCompleter GoToDefinitionElseDeclaration<CR>
+         " }}}
+   endif
    Plugin 'tpope/vim-commentary'
       " {{{
       augroup commentary
@@ -281,6 +290,10 @@ set nocompatible                          " be iMproved, required
    Plugin 'Konfekt/FastFold'
    Plugin 'tpope/vim-unimpaired'
    Plugin 'tpope/vim-dispatch'
+   if has("nvim")
+      " allows vim-dispatch to use neovim terminal
+      Plugin 'radenling/vim-dispatch-neovim'
+   endif
    Plugin 'tpope/vim-surround'
    Plugin 'tpope/vim-airline'
       " {{{
@@ -303,6 +316,11 @@ set nocompatible                          " be iMproved, required
       " }}}
    Plugin 'tpope/vim-repeat'
    Plugin 'nvie/vim-flake8'
+   Plugin 'ervandew/supertab'
+      " {{{
+      " Go through completion menu from top to bottom
+      let g:SuperTabDefaultCompletionType = "<c-n>"
+      " }}}
 
    " Haven't tried these yet
    "Plugin 'mbbill/undotree'  # \u is what Joe uses to show it
@@ -314,7 +332,36 @@ set nocompatible                          " be iMproved, required
       " nnoremap <leader><C-i> :BufSurfForward<CR>
       " }}}
    "Plugin 'vim-scripts/TagHighlight'
+   Plugin 'tpope/vim-fugitive'
    "cross reference: opengrok or cscope
+   " These are split from vim-easyclip:
+   Plugin 'svermeulen/vim-cutlass'
+      " {{{
+      " 'move' - with vim-cutlass, x and d go to black hole register
+      nnoremap <leader>d d
+      xnoremap <leader>d d
+      nnoremap <leader>dd dd
+      nnoremap <leader>D D
+      " }}}
+   " Plugin 'svermeulen/vim-yoink'
+   "    " {{{
+   "    nmap [Y <plug>(YoinkPostPasteSwapBack)
+   "    nmap ]Y <plug>(YoinkPostPasteSwapForward)
+
+   "    nmap p <plug>(YoinkPaste_p)
+   "    nmap P <plug>(YoinkPaste_P)
+
+   "    nmap [y <plug>(YoinkRotateBack)
+   "    nmap ]y <plug>(YoinkRotateForward)
+
+   "    nmap <c-=> <plug>(YoinkPostPasteToggleFormat)
+
+   "    nmap y <plug>(YoinkYankPreserveCursorPosition)
+   "    xmap y <plug>(YoinkYankPreserveCursorPosition)
+
+   "    let g:yoinkIncludeDeleteOperations=1
+   "    " }}}
+   "Plugin 'svermeulen/vim-subversive'
 
    " All of your Plugins must be added before the following line
    call vundle#end()                         " required
@@ -324,7 +371,9 @@ set nocompatible                          " be iMproved, required
    let mapleader = "\\"       " for <leader>
    " let maplocalleader = "-"   " for <localleader>
 
+   " replace <esc> with jk
    inoremap jk <esc>
+   inoremap JK <esc>
    inoremap <esc> <nop>
 
    " Make Y yank the rest of the line (yy yankes the line)
@@ -378,9 +427,13 @@ set nocompatible                          " be iMproved, required
    " Switch to directory of current file
    nnoremap <leader>cd :cd %:p:h<CR>
 
+   " 'Project File': change directory and source (e.g. _vimrc file)
+   nnoremap <leader>pf :cd %:p:h<CR>:so %<CR>
+
    " Neovim specific mappings
    if has('nvim')    " or if exists(':tnoremap')
       tnoremap <Esc> <C-\><C-n>     " allow escape to enter normal mode in terminal
+      nnoremap <leader>gb :e term://git-cmd.exe --no-cd --command=usr/bin/bash.exe -l -i<CR>
    endif
 
    " Convert brackets: ( asdf ), [ asdf ], { asdf }, < asdf > to (asdf), [asdf], {asdf}, <asdf>
@@ -394,7 +447,7 @@ set nocompatible                          " be iMproved, required
                      \ :%s/ >/>/g<CR>
 
    " If popup menu, make newline when enter is pressed
-   inoremap <expr> <CR>       pumvisible() ? "\<C-e>\<CR>" : "\<CR>"
+   inoremap <expr> <CR> pumvisible() ? "\<C-e>\<CR>" : "\<CR>"
 
    " bind \ (backward slash) to grep shortcut
    if !exists(":Ag")
@@ -403,11 +456,17 @@ set nocompatible                          " be iMproved, required
    endif
 
    " bind K to grep word under cursor
-   nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
+   nnoremap K :grep! "\b<cword>\b"<CR>:cw<CR>
+
+   " search for whole word
+   nnoremap <leader>/ /\<\><left><left>
 
    " Nerdtree
    nnoremap <leader>nt :NERDTreeToggle<CR>
 
+   " commands to set up subtitute with the word or WORD under the cursor
+   nnoremap <leader>sw :s/\(<c-r>=expand("<cword>")<cr>\)/
+   nnoremap <leader>sW :s/\(<c-r>=expand("<cWORD>")<cr>\)/
 
    " }}}
 
