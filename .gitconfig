@@ -1,0 +1,30 @@
+[user]
+    name = Marshall Anderson
+    email = Anderson_Marshall@shure.com
+[core]
+    autocrlf = false
+    excludesfile = ~/.gitignore_global
+[diff]
+    tool = bc3
+[merge]
+    tool = bc3
+[alias]
+    st = status -s
+    sl = stash list
+    ss = stash show
+    ssd = stash show -p
+    files = diff --stat
+    l   = log                                    --graph --pretty=format:'%C(auto)%h %C(bold blue)(%cd) %C(magenta)<%an> %C(white)-%C(auto)%d %s' --date=short
+    ls  = log                             -25    --graph --pretty=format:'%C(auto)%h %C(bold blue)(%cd) %C(magenta)<%an> %C(white)-%C(auto)%d %s' --date=short
+    ll  = log                             --stat --graph --pretty=format:'%C(auto)%h %C(bold blue)(%cd) %C(magenta)<%an> %C(white)-%C(auto)%d %s' --date=short
+    la  = log --branches --tags --remotes        --graph --pretty=format:'%C(auto)%h %C(bold blue)(%cd) %C(magenta)<%an> %C(white)-%C(auto)%d %s' --date=short
+    las = log --branches --tags --remotes -25    --graph --pretty=format:'%C(auto)%h %C(bold blue)(%cd) %C(magenta)<%an> %C(white)-%C(auto)%d %s' --date=short
+    lla = log --branches --tags --remotes --stat --graph --pretty=format:'%C(auto)%h %C(bold blue)(%cd) %C(magenta)<%an> %C(white)-%C(auto)%d %s' --date=short
+[push]
+    default = simple
+[color]
+    ui = auto
+[mergetool "bc4"]
+    trustExitCode = true
+[mergetool "bc3"]
+    trustExitCode = true

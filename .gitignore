@@ -5,17 +5,16 @@
 !.bashrc
 !.ctags
 !.git-completion.bash
+!.gitconfig
 !.gitignore
 !.gitignore_global
 !.vimrc
 
 !.config
 !.config/*
-#!.config/nvim/*
 !.config/nvim/init.vim
 
 !.atom
-#!.atom/*
 .atom/.gitignore
 !.atom/config.cson
 !.atom/init.coffee
