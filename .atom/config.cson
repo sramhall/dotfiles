@@ -1,0 +1,84 @@
+"*":
+  "command-palette":
+    preserveLastSearch: true
+  core:
+    audioBeep: false
+    closeDeletedFileTabs: true
+    closeEmptyWindows: false
+    destroyEmptyPanes: false
+    disabledPackages: [
+      "find-and-replace-under-cursor"
+      "highlight-selected"
+      "tidy-tabs"
+    ]
+    ignoredNames: [
+      ".git"
+      ".hg"
+      ".svn"
+      ".DS_Store"
+      "._*"
+      "Thumbs.db"
+      "desktop.ini"
+      "*.pbxproj"
+      "tags"
+    ]
+    openEmptyEditorOnStart: false
+    packagesWithKeymapsDisabled: [
+      "dash"
+    ]
+    telemetryConsent: "limited"
+    themes: [
+      "one-light-ui"
+      "one-light-syntax"
+    ]
+  editor:
+    atomicSoftTabs: false
+    invisibles: {}
+    scrollPastEnd: true
+    showIndentGuide: true
+    showInvisibles: true
+    tabLength: 4
+    tabType: "soft"
+  "exception-reporting":
+    userId: "6b982d8d-d8c9-4aa6-adc2-6a5052b248bc"
+  "find-and-replace":
+    closeFindPanelAfterSearch: true
+  "fuzzy-finder":
+    preserveLastSearch: true
+    searchAllPanes: true
+  github: {}
+  "highlight-selected":
+    hideHighlightOnSelectedWord: true
+    highlightBackground: true
+    lightTheme: true
+  minimap:
+    absoluteMode: true
+    adjustAbsoluteModeHeight: true
+    plugins:
+      bookmarks: true
+      bookmarksDecorationsZIndex: 0
+      cursorline: true
+      cursorlineDecorationsZIndex: 0
+      "highlight-selected": true
+      "highlight-selectedDecorationsZIndex": 0
+      "minimap-autohider": true
+      "minimap-autohiderDecorationsZIndex": 0
+      "minimap-quick-highlight": true
+      "minimap-quick-highlightDecorationsZIndex": 0
+    scrollAnimation: true
+  "minimap-autohider":
+    TimeToHide: 5000
+  "quick-highlight": {}
+  tabs:
+    enableVcsColoring: true
+  "todo-show":
+    sortAscending: false
+    sortBy: "Path"
+  "vim-mode-plus":
+    hideCommandsFromCommandPalette: true
+    keymapYToYankToLastCharacterOfLine: true
+    useSmartcaseForSearch: true
+  welcome:
+    showOnStartup: false
+  whitespace:
+    ignoreWhitespaceOnCurrentLine: false

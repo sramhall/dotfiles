@@ -1,4 +1,27 @@
 *
+#*.swp
 
-!.vimrc
+!.bash_profile
+!.bashrc
+!.ctags
+!.git-completion.bash
 !.gitignore
+!.gitignore_global
+!.vimrc
+
+!.config
+!.config/*
+#!.config/nvim/*
+!.config/nvim/init.vim
+
+!.atom
+#!.atom/*
+.atom/.gitignore
+!.atom/config.cson
+!.atom/init.coffee
+!.atom/keymap.cson
+!.atom/snippets.cson
+!.atom/styles.less
+
+# https://atom.io/packages/parcel
+!.atom/packages.cson
