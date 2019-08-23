@@ -14,6 +14,7 @@ set nocompatible                          " be iMproved, required
    " set hidden                                " hide buffers instead of closing them
    set foldopen+=jump foldopen-=block foldopen-=hor   " open folds for jumps, but not for block or horizontal movement
    set virtualedit=block                     " allow cursor to go where there is no character in visual block mode
+   set directory=.                           " save .swp files in same directory as edited file
    " if has( "formatoptions" )
       " set formatoptions-=cro            "set formatoptions+=j
    " endif
@@ -51,9 +52,9 @@ set nocompatible                          " be iMproved, required
    " }}}
 " Whitespace / Indentation {{{
    filetype plugin indent on                 " Enable filetype detection--specific behavior for plugins and indent
-   set tabstop=3                             " Tab is equivalent to 3 spaces
-   set softtabstop=3                         " Use 3 spaces when pressing tab in insert mode
-   set shiftwidth=3                          " Shifting/indenting text inserts 3 spaces
+   set tabstop=4                             " Tab is equivalent to 3 spaces
+   set softtabstop=4                         " Use 3 spaces when pressing tab in insert mode
+   set shiftwidth=4                          " Shifting/indenting text inserts 3 spaces
    set expandtab                             " Always expand tabs to spaces
    set autoindent                            " Copy indent from current line when creating new line
    set copyindent                            " Copy indent from previous line
@@ -73,17 +74,19 @@ set nocompatible                          " be iMproved, required
    set ruler                                 " show the cursor position all the time
    set showmatch                             " show matching brackets
 
-   " set font based on platform
-   " if has("nvim")    " Also check per platform
-   "    set guifont=Consolas:h9:cANSI    " not tested
-   if has( "macunix" )
-      set guifont=Consolas:h9:cANSI    " not tested
-   elseif has( "unix" )
-      set guifont="DejaVu Sans Mono 10"
-   elseif has( "win32" )
-      set guifont=Consolas:h9:cANSI
-   else
-      set guifont=Consolas:h9:cANSI    " not tested
+   if !has("gui_vimr")
+      " set font based on platform
+      " if has("nvim")    " Also check per platform
+      "    set guifont=Consolas:h9:cANSI    " not tested
+      if has( "macunix" )
+         set guifont=Consolas:h9:cANSI    " not tested
+      elseif has( "unix" )
+         set guifont="DejaVu Sans Mono 10"
+      elseif has( "win32" )
+         set guifont=Consolas:h9:cANSI
+      else
+         set guifont=Consolas:h9:cANSI    " not tested
+      endif
    endif
 
    " set lines=50                              " GUI 50 lines long
@@ -160,6 +163,8 @@ set nocompatible                          " be iMproved, required
          autocmd Filetype c setlocal tabstop=3 softtabstop=3 shiftwidth=3
          autocmd Filetype json setlocal tabstop=4 softtabstop=4 shiftwidth=4
          autocmd Filetype cs setlocal tabstop=4 softtabstop=4 shiftwidth=4
+         autocmd Filetype objc setlocal tabstop=4 softtabstop=4 shiftwidth=4
+         autocmd Filetype objcpp setlocal tabstop=4 softtabstop=4 shiftwidth=4
 
          " filetype specific folding
          autocmd Filetype python setlocal foldmethod=indent foldlevelstart=0
@@ -267,17 +272,17 @@ set nocompatible                          " be iMproved, required
          let g:deoplete#enable_at_startup = 1
          " }}}
    else
-      Plugin 'Valloric/YouCompleteMe'
-         " {{{
-         let g:ycm_autoclose_preview_window_after_completion = 1
-         let g:ycm_complete_in_comments = 1
-         let g:ycm_collect_identifiers_from_tags_files = 1
-         let g:ycm_confirm_extra_conf = 0
-         let g:ycm_show_diagnostics_ui = 0
-         let g:ycm_server_python_interpreter = 'C:\Python35-32\python.exe'
-         let g:ycm_filetype_specific_completion_to_disable = {'cpp': 1, 'c': 1}
-         " noremap <leader>gd :YcmCompleter GoToDefinitionElseDeclaration<CR>
-         " }}}
+      " Plugin 'Valloric/YouCompleteMe'
+      "    " {{{
+      "    let g:ycm_autoclose_preview_window_after_completion = 1
+      "    let g:ycm_complete_in_comments = 1
+      "    let g:ycm_collect_identifiers_from_tags_files = 1
+      "    let g:ycm_confirm_extra_conf = 0
+      "    let g:ycm_show_diagnostics_ui = 0
+      "    let g:ycm_server_python_interpreter = 'C:\Python35-32\python.exe'
+      "    let g:ycm_filetype_specific_completion_to_disable = {'cpp': 1, 'c': 1}
+      "    " noremap <leader>gd :YcmCompleter GoToDefinitionElseDeclaration<CR>
+      "    " }}}
    endif
    Plugin 'tpope/vim-commentary'
       " {{{
@@ -334,34 +339,6 @@ set nocompatible                          " be iMproved, required
    "Plugin 'vim-scripts/TagHighlight'
    Plugin 'tpope/vim-fugitive'
    "cross reference: opengrok or cscope
-   " These are split from vim-easyclip:
-   Plugin 'svermeulen/vim-cutlass'
-      " {{{
-      " 'move' - with vim-cutlass, x and d go to black hole register
-      nnoremap <leader>d d
-      xnoremap <leader>d d
-      nnoremap <leader>dd dd
-      nnoremap <leader>D D
-      " }}}
-   " Plugin 'svermeulen/vim-yoink'
-   "    " {{{
-   "    nmap [Y <plug>(YoinkPostPasteSwapBack)
-   "    nmap ]Y <plug>(YoinkPostPasteSwapForward)
-
-   "    nmap p <plug>(YoinkPaste_p)
-   "    nmap P <plug>(YoinkPaste_P)
-
-   "    nmap [y <plug>(YoinkRotateBack)
-   "    nmap ]y <plug>(YoinkRotateForward)
-
-   "    nmap <c-=> <plug>(YoinkPostPasteToggleFormat)
-
-   "    nmap y <plug>(YoinkYankPreserveCursorPosition)
-   "    xmap y <plug>(YoinkYankPreserveCursorPosition)
-
-   "    let g:yoinkIncludeDeleteOperations=1
-   "    " }}}
-   "Plugin 'svermeulen/vim-subversive'
 
    " All of your Plugins must be added before the following line
    call vundle#end()                         " required
@@ -410,7 +387,7 @@ set nocompatible                          " be iMproved, required
    nnoremap <leader>hd :resize -20<CR>
 
    " Open/close quickfix
-   nnoremap <leader>qo :copen<CR>
+   nnoremap <leader>qo :botright cwindow<CR>
    nnoremap <leader>qc :cclose<CR>
    nnoremap <leader>lo :lopen<CR>
    nnoremap <leader>lc :lclose<CR>
@@ -432,8 +409,11 @@ set nocompatible                          " be iMproved, required
 
    " Neovim specific mappings
    if has('nvim')    " or if exists(':tnoremap')
-      tnoremap <Esc> <C-\><C-n>     " allow escape to enter normal mode in terminal
-      nnoremap <leader>gb :e term://git-cmd.exe --no-cd --command=usr/bin/bash.exe -l -i<CR>
+      tnoremap jk <C-\><C-n>     " allow escape to enter normal mode in terminal
+      tnoremap JK <C-\><C-n>     " allow escape to enter normal mode in terminal
+      if has("win32")
+         nnoremap <leader>gb :e term://git-cmd.exe --no-cd --command=usr/bin/bash.exe -l -i<CR>
+      endif
    endif
 
    " Convert brackets: ( asdf ), [ asdf ], { asdf }, < asdf > to (asdf), [asdf], {asdf}, <asdf>
