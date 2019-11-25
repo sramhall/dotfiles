@@ -31,6 +31,12 @@
 # Atom Flight Manual:
 # http://flight-manual.atom.io/using-atom/sections/basic-customization/#configuring-with-cson
 
+'atom-text-editor':
+    'cmd-k right': 'pane:split-right-and-move-active-item'
+    'cmd-k left': 'pane:split-left-and-move-active-item'
+    'cmd-k up': 'pane:split-up-and-move-active-item'
+    'cmd-k down': 'pane:split-down-and-move-active-item'
+
 'atom-text-editor.vim-mode-plus.normal-mode, atom-text-editor.vim-mode-plus.visual-mode':
     'g m': 'vim-mode-plus-user:quick-highlight'
     'g M': 'quick-highlight:clear'
@@ -46,6 +52,8 @@
 'atom-text-editor.vim-mode-plus.normal-mode':
     '] space': 'vim-mode-plus:add-blank-line-below'
     '[ space': 'vim-mode-plus:add-blank-line-above'
+    '] ]': 'vim-mode-plus:move-down-to-edge'
+    '[ [': 'vim-mode-plus:move-up-to-edge'
     'space': 'vim-mode-plus:toggle-fold'
     'cmd-]': 'last-cursor-position:next'
     'cmd-[': 'last-cursor-position:previous'

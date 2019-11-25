@@ -9,12 +9,3 @@
 # atom.workspace.observeTextEditors (editor) ->
 #   editor.onDidSave ->
 #     console.log "Saved! #{editor.getPath()}"
-
-# foldCode = (editor) ->
-    # editor.foldAllAtIndentLevel(0)
-
-# Add callback for when a text editor is added
-# atom.workspace.observeTextEditors(foldCode)
-
-atom.workspace.onDidAddTextEditor (event) ->
-  atom.commands.dispatch(atom.views.getView(event.textEditor), 'editor:fold-at-indent-level-1')

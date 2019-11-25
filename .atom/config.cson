@@ -10,7 +10,9 @@
       "find-and-replace-under-cursor"
       "highlight-selected"
       "tidy-tabs"
+      "parcel"
     ]
+    excludeVcsIgnoredPaths: false
     ignoredNames: [
       ".git"
       ".hg"
@@ -21,6 +23,7 @@
       "desktop.ini"
       "*.pbxproj"
       "tags"
+      "Documentation"
     ]
     openEmptyEditorOnStart: false
     packagesWithKeymapsDisabled: [
@@ -75,7 +78,6 @@
     sortAscending: false
     sortBy: "Path"
   "vim-mode-plus":
-    hideCommandsFromCommandPalette: true
     keymapYToYankToLastCharacterOfLine: true
     useSmartcaseForSearch: true
   welcome:
