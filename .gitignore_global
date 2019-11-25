@@ -239,3 +239,4 @@ fastlane/screenshots
 #
 # Don't commit tags files
 tags
+.tags
