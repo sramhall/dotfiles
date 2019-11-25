@@ -74,12 +74,16 @@ set nocompatible                          " be iMproved, required
    set ruler                                 " show the cursor position all the time
    set showmatch                             " show matching brackets
 
-   if !has("gui_vimr")
+   if has("nvim")
+      if has( "macunix" )
+         " Guifont Courier New:h14
+      end
+   elseif !has("gui_vimr")
       " set font based on platform
       " if has("nvim")    " Also check per platform
       "    set guifont=Consolas:h9:cANSI    " not tested
       if has( "macunix" )
-         set guifont=Consolas:h9:cANSI    " not tested
+         set guifont=Consolas:h12:cANSI    " not tested
       elseif has( "unix" )
          set guifont="DejaVu Sans Mono 10"
       elseif has( "win32" )
@@ -138,6 +142,7 @@ set nocompatible                          " be iMproved, required
       let g:LargeFile = 5 * 1024 * 1024
 
       augroup LargeFile
+      autocmd!
          autocmd BufReadPre * let f=expand("<afile>") | if getfsize(f) > g:LargeFile | set foldmethod=indent |  else | set foldmethod=syntax | endif
       augroup END
 
