@@ -3,7 +3,7 @@
 	email = Anderson_Marshall@shure.com
 [core]
     autocrlf = false
-    excludesfile = ~/.gitignore_global
+	excludesfile = /Users/andersm/.gitignore_global
 [diff]
     tool = bc3
 [merge]
@@ -19,17 +19,17 @@
 
     ;Show current branch only (long, short, full stats)
     lcl = log --graph --pretty=format:'%C(auto)%h %C(bold blue)(%cd) %C(magenta)<%an> %C(white)-%C(auto)%d %s' --date=short
-    lc  = lcl -25
+    lc  = lcl -15
     lcf = lcl --stat
 
     ;Show builds (long, short, full stats)
     lbl = lcl --branches --tags --remotes
-    lb  = lbl -25
+    lb  = lbl -15
     lbf = lbl --stat
 
     ;Don't show builds (long, short, full stats)
-    ll  = lbl --decorate-refs-exclude=*/builds/*
-    l   = ll -25
+    ll  = lcl --branches --remotes --decorate-refs-exclude=*/builds/*
+    l   = ll -15
     lf  = ll --stat
 [push]
     default = simple
@@ -39,3 +39,14 @@
     trustExitCode = true
 [mergetool "bc3"]
     trustExitCode = true
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[mergetool "sourcetree"]
+	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true

@@ -11,6 +11,20 @@
       "highlight-selected"
       "tidy-tabs"
       "parcel"
+      "minimap"
+      "minimap-autohider"
+      "minimap-bookmarks"
+      "minimap-cursorline"
+      "minimap-highlight-selected"
+      "minimap-quick-highlight"
+      "dash"
+      "symbol-gen"
+      "symbols-tree-view"
+      "teletype"
+      "todo-show"
+      "ide-sourcekit"
+      "ide-swift"
+      "atom-ide-ui"
     ]
     excludeVcsIgnoredPaths: false
     ignoredNames: [
@@ -24,6 +38,7 @@
       "*.pbxproj"
       "tags"
       "Documentation"
+      ".repo"
     ]
     openEmptyEditorOnStart: false
     packagesWithKeymapsDisabled: [
@@ -31,8 +46,8 @@
     ]
     telemetryConsent: "limited"
     themes: [
-      "one-light-ui"
-      "one-light-syntax"
+      "atom-dark-ui"
+      "atom-dark-syntax"
     ]
   editor:
     atomicSoftTabs: false
@@ -75,7 +90,6 @@
   tabs:
     enableVcsColoring: true
   "todo-show":
-    sortAscending: false
     sortBy: "Path"
   "vim-mode-plus":
     keymapYToYankToLastCharacterOfLine: true
