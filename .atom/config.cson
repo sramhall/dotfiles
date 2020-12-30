@@ -5,7 +5,6 @@
     audioBeep: false
     closeDeletedFileTabs: true
     closeEmptyWindows: false
-    destroyEmptyPanes: false
     disabledPackages: [
       "find-and-replace-under-cursor"
       "highlight-selected"
@@ -27,19 +26,6 @@
       "atom-ide-ui"
     ]
     excludeVcsIgnoredPaths: false
-    ignoredNames: [
-      ".git"
-      ".hg"
-      ".svn"
-      ".DS_Store"
-      "._*"
-      "Thumbs.db"
-      "desktop.ini"
-      "*.pbxproj"
-      "tags"
-      "Documentation"
-      ".repo"
-    ]
     openEmptyEditorOnStart: false
     packagesWithKeymapsDisabled: [
       "dash"
@@ -91,6 +77,8 @@
     enableVcsColoring: true
   "todo-show":
     sortBy: "Path"
+  "tree-view":
+    hideVcsIgnoredFiles: true
   "vim-mode-plus":
     keymapYToYankToLastCharacterOfLine: true
     useSmartcaseForSearch: true
