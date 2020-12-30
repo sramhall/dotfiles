@@ -11,11 +11,11 @@
 [alias]
     sync = pull --rebase
     st = status -s
+    sb = status -sb
     sl = stash list
     ss = stash show
     ssd = stash show -p
     files = diff --stat
-    ahead = rev-list --left-right --count
 
     ;Show current branch only (long, short, full stats)
     lcl = log --graph --pretty=format:'%C(auto)%h %C(bold blue)(%cd) %C(magenta)<%an> %C(white)-%C(auto)%d %s' --date=short
