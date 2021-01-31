@@ -28,7 +28,7 @@
     lbf = lbl --stat
 
     ;Don't show builds (long, short, full stats)
-    ll  = lcl --branches --remotes --decorate-refs-exclude=*/builds/*
+    ll  = lcl --branches --remotes --decorate-refs-exclude=*/builds/* --decorate-refs-exclude=refs/tags/*
     l   = ll -15
     lf  = ll --stat
 [push]
