@@ -1,9 +1,9 @@
 [user]
 	name = Marshall Anderson
-	email = Anderson_Marshall@shure.com
+	email = ...
 [core]
     autocrlf = false
-	excludesfile = /Users/andersm/.gitignore_global
+	excludesfile = /Users/manderson/.gitignore_global
 [diff]
     tool = bc3
 [merge]
@@ -41,7 +41,7 @@
     trustExitCode = true
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path = 
+	path =
 [mergetool "sourcetree"]
 	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
 	trustExitCode = true
@@ -50,3 +50,5 @@
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
+[commit]
+	template = /Users/manderson/.stCommitMsg

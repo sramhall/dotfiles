@@ -272,9 +272,9 @@ set nocompatible                          " be iMproved, required
    Plugin 'davidhalter/jedi-vim'
    Plugin 'scrooloose/nerdtree'
    if has("nvim")
-      Plugin 'Shougo/deoplete.nvim'
+      " Plugin 'Shougo/deoplete.nvim'
          " {{{
-         let g:deoplete#enable_at_startup = 1
+         " let g:deoplete#enable_at_startup = 1
          " }}}
    else
       " Plugin 'Valloric/YouCompleteMe'
@@ -316,7 +316,7 @@ set nocompatible                          " be iMproved, required
    Plugin 'tpope/vim-capslock'
 
    " The snippet engine
-   Plugin 'sirver/ultisnips'
+   " Plugin 'sirver/ultisnips'
    " The snippet contents
    Plugin 'honza/vim-snippets'
       " {{{

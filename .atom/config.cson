@@ -24,6 +24,7 @@
       "ide-sourcekit"
       "ide-swift"
       "atom-ide-ui"
+      "data-atom"
     ]
     excludeVcsIgnoredPaths: false
     openEmptyEditorOnStart: false
@@ -86,3 +87,4 @@
     showOnStartup: false
   whitespace:
     ignoreWhitespaceOnCurrentLine: false
+    removeTrailingWhitespace: false
