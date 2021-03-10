@@ -87,4 +87,4 @@
     showOnStartup: false
   whitespace:
     ignoreWhitespaceOnCurrentLine: false
-    removeTrailingWhitespace: false
+    ignoreWhitespaceOnlyLines: true
