@@ -17,20 +17,10 @@
     ssd = stash show -p
     files = diff --stat
 
-    ;Show current branch only (long, short, full stats)
-    lcl = log --graph --pretty=format:'%C(auto)%h %C(bold blue)(%cd) %C(magenta)<%an> %C(white)-%C(auto)%d %s' --date=short
-    lc  = lcl -15
-    lcf = lcl --stat
-
-    ;Show builds (long, short, full stats)
-    lbl = lcl --branches --tags --remotes
-    lb  = lbl -15
-    lbf = lbl --stat
-
-    ;Don't show builds (long, short, full stats)
-    ll  = lcl --branches --remotes --decorate-refs-exclude=*/builds/* --decorate-refs-exclude=refs/tags/*
-    l   = ll -15
-    lf  = ll --stat
+    lbase = log --graph --decorate --all
+    ll = lbase --pretty=fave
+    l = ll -20
+    lf = lbase --pretty=medium --stat
 [push]
     default = simple
 [color]
@@ -52,3 +42,5 @@
 	required = true
 [commit]
 	template = /Users/manderson/.stCommitMsg
+[pretty]
+	fave = %C(auto)%h %s%C(bold red)%d %C(bold magenta)<%an>
