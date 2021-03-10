@@ -43,4 +43,4 @@
 [commit]
 	template = /Users/manderson/.stCommitMsg
 [pretty]
-	fave = %C(auto)%h %s%C(bold red)%d %C(bold magenta)<%an>
+	fave = %C(auto)%h %s%C(auto)%d %C(bold magenta)<%an>
