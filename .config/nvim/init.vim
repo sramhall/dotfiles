@@ -3,3 +3,6 @@
 source ~/.vimrc
 nnoremap <silent> <leader>ev :split ~/.vimrc<CR>
 nnoremap <silent> <leader>evn :split $MYVIMRC<CR>
+if has( "macunix" )
+    Guifont Courier New:h16
+end

@@ -80,10 +80,8 @@ set nocompatible                          " be iMproved, required
       end
    elseif !has("gui_vimr")
       " set font based on platform
-      " if has("nvim")    " Also check per platform
-      "    set guifont=Consolas:h9:cANSI    " not tested
       if has( "macunix" )
-         set guifont=Consolas:h12:cANSI    " not tested
+         set guifont=Menlo-Regular:h14
       elseif has( "unix" )
          set guifont="DejaVu Sans Mono 10"
       elseif has( "win32" )
@@ -128,7 +126,7 @@ set nocompatible                          " be iMproved, required
 
    " Use Ag for grep
    if executable('ag')
-      set grepprg=ag\ --nogroup\ --nocolor
+      set grepprg=ag\ --nogroup\ --nocolor\ --column
    endif
    " }}}
 " Folding {{{
@@ -270,7 +268,7 @@ set nocompatible                          " be iMproved, required
       " }}}
    Plugin 'thinca/vim-visualstar'
    Plugin 'davidhalter/jedi-vim'
-   Plugin 'scrooloose/nerdtree'
+   " Plugin 'scrooloose/nerdtree'
    if has("nvim")
       " Plugin 'Shougo/deoplete.nvim'
          " {{{
@@ -305,7 +303,7 @@ set nocompatible                          " be iMproved, required
       Plugin 'radenling/vim-dispatch-neovim'
    endif
    Plugin 'tpope/vim-surround'
-   Plugin 'tpope/vim-airline'
+   Plugin 'vim-airline/vim-airline'
       " {{{
       let g:airline#extensions#tagbar#enabled = 0     " this integration is broken with the git commit message, so disable it
       " }}}
@@ -344,6 +342,8 @@ set nocompatible                          " be iMproved, required
    "Plugin 'vim-scripts/TagHighlight'
    Plugin 'tpope/vim-fugitive'
    "cross reference: opengrok or cscope
+
+   Plugin 'keith/swift.vim'
 
    " All of your Plugins must be added before the following line
    call vundle#end()                         " required
@@ -421,16 +421,6 @@ set nocompatible                          " be iMproved, required
       endif
    endif
 
-   " Convert brackets: ( asdf ), [ asdf ], { asdf }, < asdf > to (asdf), [asdf], {asdf}, <asdf>
-   nnoremap <leader>cb :%s/( /(/g<CR>
-                     \ :%s/ )/)/g<CR>
-                     \ :%s/\[ /[/g<CR>
-                     \ :%s/ ]/]/g<CR>
-                     \ :%s/{ /{/g<CR>
-                     \ :%s/ }/}/g<CR>
-                     \ :%s/< /</g<CR>
-                     \ :%s/ >/>/g<CR>
-
    " If popup menu, make newline when enter is pressed
    inoremap <expr> <CR> pumvisible() ? "\<C-e>\<CR>" : "\<CR>"
 
@@ -447,7 +437,7 @@ set nocompatible                          " be iMproved, required
    nnoremap <leader>/ /\<\><left><left>
 
    " Nerdtree
-   nnoremap <leader>nt :NERDTreeToggle<CR>
+   " nnoremap <leader>nt :NERDTreeToggle<CR>
 
    " commands to set up subtitute with the word or WORD under the cursor
    nnoremap <leader>sw :s/\(<c-r>=expand("<cword>")<cr>\)/
