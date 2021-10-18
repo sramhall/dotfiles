@@ -4,10 +4,6 @@
 [core]
     autocrlf = false
 	excludesfile = /Users/manderson/.gitignore_global
-[diff]
-    tool = bc3
-[merge]
-    tool = bc3
 [alias]
     sync = pull --rebase
     st = status -s
@@ -17,7 +13,7 @@
     ssd = stash show -p
     files = diff --stat
 
-    lbase = log --graph --decorate --all
+    lbase = log --graph --decorate --branches --tags --remotes
     ll = lbase --pretty=fave
     l = ll -20
     lf = lbase --pretty=medium --stat
@@ -25,15 +21,11 @@
     default = simple
 [color]
     ui = auto
-[mergetool "bc4"]
-    trustExitCode = true
-[mergetool "bc3"]
-    trustExitCode = true
 [difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path =
+	cmd = /Applications/DiffMerge.app/Contents/MacOS/DiffMerge --nosplash \"$LOCAL\" \"$REMOTE\"
+	path = 
 [mergetool "sourcetree"]
-	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	cmd = /Applications/DiffMerge.app/Contents/MacOS/DiffMerge --nosplash --merge --result=\"$MERGED\" \"$LOCAL\" \"$BASE\" \"$REMOTE\"
 	trustExitCode = true
 [filter "lfs"]
 	clean = git-lfs clean -- %f
@@ -44,3 +36,5 @@
 	template = /Users/manderson/.stCommitMsg
 [pretty]
 	fave = %C(auto)%h %s%C(auto)%d %C(bold magenta)<%an>
+[fetch]
+	prune = true
