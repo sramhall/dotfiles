@@ -267,7 +267,7 @@ set nocompatible                          " be iMproved, required
       let g:tagbar_autofocus = 1
       " }}}
    Plugin 'thinca/vim-visualstar'
-   Plugin 'davidhalter/jedi-vim'
+   " Plugin 'davidhalter/jedi-vim'
    " Plugin 'scrooloose/nerdtree'
    if has("nvim")
       " Plugin 'Shougo/deoplete.nvim'
@@ -294,8 +294,8 @@ set nocompatible                          " be iMproved, required
          autocmd Filetype cpp setl commentstring=//%s
       augroup END
       " }}}
-   Plugin 'tmhedberg/SimpylFold'      " Improved Python folding
-   Plugin 'Konfekt/FastFold'
+   " Plugin 'tmhedberg/SimpylFold'      " Improved Python folding
+   " Plugin 'Konfekt/FastFold'
    Plugin 'tpope/vim-unimpaired'
    Plugin 'tpope/vim-dispatch'
    if has("nvim")
