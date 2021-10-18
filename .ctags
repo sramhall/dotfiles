@@ -1,4 +1,3 @@
-# basic options
 --recurse=yes
 --exclude=.git
 --exclude=*.html
@@ -7,22 +6,13 @@
 --exclude=*.plist
 --exclude=.repo
 
-# Regex for swift
 --langdef=swift
 --langmap=swift:+.swift
 
---kinddef-swift=v,variable,variables
---kinddef-swift=f,function,functions
---kinddef-swift=s,struct,structs
---kinddef-swift=c,class,classes
---kinddef-swift=p,protocol,protocols
---kinddef-swift=e,enum,enums
---kinddef-swift=t,typealias,typealiases
-
---regex-swift=/(var|let)[ \t]+([^:=]+).*$/\2/v/
---regex-swift=/func[ \t]+([^\(\)]+)\([^\(\)]*\)/\1/f/
---regex-swift=/struct[ \t]+([^:\{]+).*$/\1/s/
---regex-swift=/class[ \t]+([^:\{]+).*$/\1/c/
---regex-swift=/protocol[ \t]+([^:\{]+).*$/\1/p/
---regex-swift=/enum[ \t]+([^:\{]+).*$/\1/e/
---regex-swift=/(typealias)[ \t]+([^:=]+).*$/\2/v/
+--regex-swift=/(var|let)[ \t]+([^:=]+).*$/\2/v,variable,variables/
+--regex-swift=/func[ \t]+([^\(\)]+)\([^\(\)]*\)/\1/f,function,functions/
+--regex-swift=/struct[ \t]+([^:\{]+).*$/\1/s,struct,structs/
+--regex-swift=/class[ \t]+([^:\{]+).*$/\1/c,class,classes/
+--regex-swift=/protocol[ \t]+([^:\{]+).*$/\1/p,protocol,protocols/
+--regex-swift=/enum[ \t]+([^:\{]+).*$/\1/e,enum,enums/
+--regex-swift=/(typealias)[ \t]+([^:=]+).*$/\2/t,typealias,typealiases/
