@@ -16,7 +16,6 @@
       "minimap-cursorline"
       "minimap-highlight-selected"
       "minimap-quick-highlight"
-      "dash"
       "symbol-gen"
       "symbols-tree-view"
       "teletype"
@@ -25,6 +24,8 @@
       "ide-swift"
       "atom-ide-ui"
       "data-atom"
+      "linter-swiftlint"
+      "linter-ui-default"
     ]
     excludeVcsIgnoredPaths: false
     openEmptyEditorOnStart: false
@@ -39,6 +40,7 @@
   editor:
     atomicSoftTabs: false
     invisibles: {}
+    preferredLineLength: 100
     scrollPastEnd: true
     showIndentGuide: true
     showInvisibles: true
@@ -51,11 +53,15 @@
   "fuzzy-finder":
     preserveLastSearch: true
     searchAllPanes: true
+  "git-diff":
+    showIconsInEditorGutter: true
   github: {}
   "highlight-selected":
     hideHighlightOnSelectedWord: true
     highlightBackground: true
     lightTheme: true
+  "linter-ui-default":
+    panelHeight: 300
   minimap:
     absoluteMode: true
     adjustAbsoluteModeHeight: true
@@ -78,13 +84,15 @@
     enableVcsColoring: true
   "todo-show":
     sortBy: "Path"
-  "tree-view":
-    hideVcsIgnoredFiles: true
+  "tree-view": {}
   "vim-mode-plus":
     keymapYToYankToLastCharacterOfLine: true
+    useClipboardAsDefaultRegister: false
     useSmartcaseForSearch: true
   welcome:
     showOnStartup: false
   whitespace:
     ignoreWhitespaceOnCurrentLine: false
-    ignoreWhitespaceOnlyLines: true
+".source.swift":
+  editor:
+    autoIndent: true

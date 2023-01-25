@@ -57,4 +57,8 @@
     'space': 'vim-mode-plus:toggle-fold'
     'cmd-]': 'last-cursor-position:next'
     'cmd-[': 'last-cursor-position:previous'
-    'K': 'dash:shortcut'
+    'g d': 'inline-git-diff:toggle'
+
+'atom-workspace:not(.has-narrow) atom-text-editor.vim-mode-plus.normal-mode.has-inline-git-diff':
+  'tab': 'git-diff:move-to-next-diff'
+  'shift-tab': 'git-diff:move-to-previous-diff'
