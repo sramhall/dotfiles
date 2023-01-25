@@ -36,11 +36,6 @@ set nocompatible                          " be iMproved, required
       set undolevels=1000
       set undoreload=10000
    endif
-
-   "autocompletion
-   set completeopt=longest,menuone
-
-   "set path+=.\**                           "When not on windows: set path=$PWD/**
    " }}}
 " Colors {{{
    " set t_Co=256
@@ -162,15 +157,17 @@ set nocompatible                          " be iMproved, required
 
          " filetype specific indenting
          autocmd Filetype python setlocal tabstop=4 softtabstop=4 shiftwidth=4
-         autocmd Filetype cpp setlocal tabstop=3 softtabstop=3 shiftwidth=3
-         autocmd Filetype c setlocal tabstop=3 softtabstop=3 shiftwidth=3
+         autocmd Filetype cpp setlocal tabstop=4 softtabstop=4 shiftwidth=4
+         autocmd Filetype c setlocal tabstop=4 softtabstop=4 shiftwidth=4
          autocmd Filetype json setlocal tabstop=4 softtabstop=4 shiftwidth=4
          autocmd Filetype cs setlocal tabstop=4 softtabstop=4 shiftwidth=4
          autocmd Filetype objc setlocal tabstop=4 softtabstop=4 shiftwidth=4
          autocmd Filetype objcpp setlocal tabstop=4 softtabstop=4 shiftwidth=4
+         autocmd Filetype swift setlocal tabstop=4 softtabstop=4 shiftwidth=4
 
          " filetype specific folding
          autocmd Filetype python setlocal foldmethod=indent foldlevelstart=0
+         autocmd Filetype swift setlocal foldmethod=indent foldlevelstart=99
 
          " manual fold mode when editing so folds below cursor don't open
          " autocmd InsertEnter * if !exists('w:last_fdm') | let w:last_fdm=&foldmethod | setlocal foldmethod=manual | endif
@@ -183,8 +180,8 @@ set nocompatible                          " be iMproved, required
          autocmd FileType text setlocal textwidth=98
 
          " Show the cursorline only in the current window
-         autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
-         autocmd WinLeave * setlocal nocursorline
+         autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline cursorcolumn
+         autocmd WinLeave * setlocal nocursorline nocursorcolumn
 
          " When editing a file, always jump to the last known cursor position.
          " Don't do it when the position is invalid or when inside an event handler
@@ -195,6 +192,10 @@ set nocompatible                          " be iMproved, required
             \ if line("'\"") > 1 && line("'\"") <= line("$") |
             \   exe "normal! g`\"" |
             \ endif
+
+         if has("nvim")
+            autocmd VimEnter * :call deoplete#custom#source('_', 'smart_case', v:true)
+         endif
 
       augroup END
 
@@ -268,24 +269,12 @@ set nocompatible                          " be iMproved, required
       " }}}
    Plugin 'thinca/vim-visualstar'
    " Plugin 'davidhalter/jedi-vim'
-   " Plugin 'scrooloose/nerdtree'
+   Plugin 'scrooloose/nerdtree'
    if has("nvim")
-      " Plugin 'Shougo/deoplete.nvim'
+      Plugin 'Shougo/deoplete.nvim'
          " {{{
-         " let g:deoplete#enable_at_startup = 1
+         let g:deoplete#enable_at_startup = 1
          " }}}
-   else
-      " Plugin 'Valloric/YouCompleteMe'
-      "    " {{{
-      "    let g:ycm_autoclose_preview_window_after_completion = 1
-      "    let g:ycm_complete_in_comments = 1
-      "    let g:ycm_collect_identifiers_from_tags_files = 1
-      "    let g:ycm_confirm_extra_conf = 0
-      "    let g:ycm_show_diagnostics_ui = 0
-      "    let g:ycm_server_python_interpreter = 'C:\Python35-32\python.exe'
-      "    let g:ycm_filetype_specific_completion_to_disable = {'cpp': 1, 'c': 1}
-      "    " noremap <leader>gd :YcmCompleter GoToDefinitionElseDeclaration<CR>
-      "    " }}}
    endif
    Plugin 'tpope/vim-commentary'
       " {{{
@@ -306,6 +295,10 @@ set nocompatible                          " be iMproved, required
    Plugin 'vim-airline/vim-airline'
       " {{{
       let g:airline#extensions#tagbar#enabled = 0     " this integration is broken with the git commit message, so disable it
+      let g:airline_section_b = ''
+      let g:airline_section_x = ''
+      let g:airline_section_y = ''
+      let g:airline_section_error = ''
       " }}}
    Plugin 'vim-airline/vim-airline-themes'
       " {{{
@@ -344,10 +337,16 @@ set nocompatible                          " be iMproved, required
    "cross reference: opengrok or cscope
 
    Plugin 'keith/swift.vim'
+   " Plugin 'inkarkat/vim-mark'
 
    " All of your Plugins must be added before the following line
    call vundle#end()                         " required
    filetype plugin indent on                 " required
+
+   " Must be after vundle#end()
+   if has("nvim")
+      call deoplete#custom#source('_', 'smart_case', v:true)
+   endif
    " }}}
 " Custom Mappings {{{
    let mapleader = "\\"       " for <leader>
@@ -356,7 +355,7 @@ set nocompatible                          " be iMproved, required
    " replace <esc> with jk
    inoremap jk <esc>
    inoremap JK <esc>
-   inoremap <esc> <nop>
+   " inoremap <esc> <nop>
 
    " Make Y yank the rest of the line (yy yankes the line)
    nnoremap Y y$
@@ -412,10 +411,16 @@ set nocompatible                          " be iMproved, required
    " 'Project File': change directory and source (e.g. _vimrc file)
    nnoremap <leader>pf :cd %:p:h<CR>:so %<CR>
 
+   " Copy the current filename to the * register
+   nnoremap <leader>cf :let @*=expand('%')<CR>
+
    " Neovim specific mappings
    if has('nvim')    " or if exists(':tnoremap')
       tnoremap jk <C-\><C-n>     " allow escape to enter normal mode in terminal
       tnoremap JK <C-\><C-n>     " allow escape to enter normal mode in terminal
+      nnoremap <leader>f :split term://fish<CR>
+      nnoremap <leader>fv :vsplit term://fish<CR>
+
       if has("win32")
          nnoremap <leader>gb :e term://git-cmd.exe --no-cd --command=usr/bin/bash.exe -l -i<CR>
       endif
@@ -427,21 +432,29 @@ set nocompatible                          " be iMproved, required
    " bind \ (backward slash) to grep shortcut
    if !exists(":Ag")
       command -nargs=+ -complete=file -bar Ag silent! grep! <args>|botright cwindow|redraw!
-      nnoremap <leader>a :Ag -i<SPACE>
+      nnoremap <leader>a :Ag -sw<SPACE>
    endif
 
    " bind K to grep word under cursor
-   nnoremap K :grep! "\b<cword>\b"<CR>:cw<CR>
+   nnoremap K :grep! "\b<cword>\b"<CR>:botright cwindow<CR>
 
    " search for whole word
    nnoremap <leader>/ /\<\><left><left>
 
    " Nerdtree
-   " nnoremap <leader>nt :NERDTreeToggle<CR>
+   nnoremap <leader>nt :NERDTreeToggle<CR>
+   " nnoremap <leader>nt :Lexplore<CR>
 
    " commands to set up subtitute with the word or WORD under the cursor
    nnoremap <leader>sw :s/\(<c-r>=expand("<cword>")<cr>\)/
    nnoremap <leader>sW :s/\(<c-r>=expand("<cWORD>")<cr>\)/
+
+   " Next method for "Java" like language, etc
+   nnoremap ]] ]m
+   nnoremap ][ ]M
+   nnoremap [[ [m
+   nnoremap [] [M
+
 
    " }}}
 
