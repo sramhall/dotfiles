@@ -238,5 +238,11 @@ fastlane/screenshots
 # ctags
 #
 # Don't commit tags files
+ctags
 tags
 .tags
+
+# Python
+#
+# Some python artifacts can be ignored
+*.ipynb
