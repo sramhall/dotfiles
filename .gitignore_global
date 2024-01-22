@@ -246,3 +246,6 @@ tags
 #
 # Some python artifacts can be ignored
 *.ipynb
+
+# Visual Studio Code
+*.code-workspace

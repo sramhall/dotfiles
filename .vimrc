@@ -15,6 +15,10 @@ set nocompatible                          " be iMproved, required
    set foldopen+=jump foldopen-=block foldopen-=hor   " open folds for jumps, but not for block or horizontal movement
    set virtualedit=block                     " allow cursor to go where there is no character in visual block mode
    set directory=.                           " save .swp files in same directory as edited file
+
+   " set spell spelllang=en_us                 " turn on spell check
+   " set spellfile=~/.en.utf-8.add
+
    " if has( "formatoptions" )
       " set formatoptions-=cro            "set formatoptions+=j
    " endif
@@ -73,6 +77,7 @@ set nocompatible                          " be iMproved, required
       if has( "macunix" )
          " Guifont Courier New:h14
       end
+      set mousemodel=extend
    elseif !has("gui_vimr")
       " set font based on platform
       if has( "macunix" )
