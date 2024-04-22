@@ -4,6 +4,122 @@ set nocompatible                          " be iMproved, required
 
 " *****************************************************************************
 
+" Plug {{{
+" Auto install vim-plug
+let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
+if empty(glob(data_dir . '/autoload/plug.vim'))
+   silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+call plug#begin()
+
+Plug 'kien/ctrlp.vim'
+   " {{{
+   let g:ctrlp_working_path_mode = 0      " Root directory will be manually set in local config
+   let g:ctrlp_by_filename = 1            " Search by filename by default
+   let g:ctrlp_map = '<c-p>'
+   let g:ctrlp_cmd = 'CtrlP'
+   let g:ctrlp_extensions = ['line']
+   let g:ctrlp_switch_buffer = 'e'        " only jump to an existing window if it's in the current tab
+   if executable('ag')
+      " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+      let g:ctrlp_user_command = 'ag -l --nocolor -g "" %s'
+
+      " ag is fast enough that CtrlP doesn't need to cache
+      let g:ctrlp_use_caching = 0
+   endif
+   " }}}
+Plug 'derekwyatt/vim-fswitch'
+   " {{{
+   nnoremap <leader>fs :FSHere<CR>
+   " }}}
+Plug 'majutsushi/tagbar'
+   " {{{
+   nnoremap <leader>tb :TagbarToggle<CR>
+   nnoremap <leader>tbp :TagbarTogglePause<CR>
+   let g:tagbar_autofocus = 1
+   " }}}
+Plug 'thinca/vim-visualstar'
+Plug 'scrooloose/nerdtree'
+Plug 'tpope/vim-commentary'
+   " {{{
+   augroup commentary
+      autocmd!
+      autocmd Filetype cpp setl commentstring=//%s
+      autocmd Filetype objc setl commentstring=//%s
+      autocmd Filetype objcpp setl commentstring=//%s
+   augroup END
+   " }}}
+Plug 'tpope/vim-unimpaired'
+Plug 'tpope/vim-surround'
+Plug 'vim-airline/vim-airline'
+   " {{{
+   let g:airline#extensions#tagbar#enabled = 0     " this integration is broken with the git commit message, so disable it
+   let g:airline_section_b = ''
+   let g:airline_section_x = ''
+   let g:airline_section_y = ''
+   let g:airline_section_error = ''
+   " }}}
+Plug 'vim-airline/vim-airline-themes'
+   " {{{
+   let g:airline_theme='light'
+   " }}}
+Plug 'tpope/vim-capslock'
+
+Plug 'tpope/vim-repeat'
+Plug 'ervandew/supertab'
+   " {{{
+   " Go through completion menu from top to bottom
+   let g:SuperTabDefaultCompletionType = "<c-n>"
+   " }}}
+Plug 't9md/vim-quickhl'
+   " {{{
+   nmap gm <Plug>(quickhl-manual-this)
+   xmap gm <Plug>(quickhl-manual-this)
+   nmap gM <Plug>(quickhl-manual-reset)
+   xmap gM <Plug>(quickhl-manual-reset)
+   " }}}
+Plug 'ton/vim-bufsurf'
+   " {{{
+      nnoremap <leader><C-o> :BufSurfBack<CR>
+   " nnoremap <leader><C-i> :BufSurfForward<CR>
+   " }}}
+Plug 'tpope/vim-fugitive'
+
+Plug 'keith/swift.vim'
+
+if has("nvim")
+    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+        " {{{
+        let g:deoplete#enable_at_startup = 1
+        call deoplete#custom#source('_', 'smart_case', v:true)
+        " }}}
+endif
+
+
+Plug 'github/copilot.vim'
+
+"   " Haven't tried these yet
+"   "Plug 'mbbill/undotree'  # \u is what Joe uses to show it
+"   "Plug 'godlygeek/tabular'
+"   "pep8
+"   "Plug 'vim-scripts/TagHighlight'
+
+    " Removed
+"   Plug 'nvie/vim-flake8'
+"   " Plug 'davidhalter/jedi-vim'
+"   " Plug 'tmhedberg/SimpylFold'      " Improved Python folding
+"   " Plug 'Konfekt/FastFold'
+"   Plug 'tpope/vim-dispatch'
+"   if has("nvim")
+"      " allows vim-dispatch to use neovim terminal
+"      Plug 'radenling/vim-dispatch-neovim'
+"   endif
+
+call plug#end()
+
+" }}}
 " VIM Functional {{{
    "set history=50                            " Keep 50 lines of command line history
    set nobackup                              " Do not keep a backup file
@@ -51,9 +167,9 @@ set nocompatible                          " be iMproved, required
    " }}}
 " Whitespace / Indentation {{{
    filetype plugin indent on                 " Enable filetype detection--specific behavior for plugins and indent
-   set tabstop=4                             " Tab is equivalent to 3 spaces
-   set softtabstop=4                         " Use 3 spaces when pressing tab in insert mode
-   set shiftwidth=4                          " Shifting/indenting text inserts 3 spaces
+   set tabstop=4                             " Tab is equivalent to 4 spaces
+   set softtabstop=4                         " Use 4 spaces when pressing tab in insert mode
+   set shiftwidth=4                          " Shifting/indenting text inserts 4 spaces
    set expandtab                             " Always expand tabs to spaces
    set autoindent                            " Copy indent from current line when creating new line
    set copyindent                            " Copy indent from previous line
@@ -188,6 +304,9 @@ set nocompatible                          " be iMproved, required
          autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline cursorcolumn
          autocmd WinLeave * setlocal nocursorline nocursorcolumn
 
+         " autoread isn't working in neovim--this is the workaround
+         autocmd FocusGained * checktime
+
          " When editing a file, always jump to the last known cursor position.
          " Don't do it when the position is invalid or when inside an event handler
          " (happens when dropping a file on gvim).
@@ -198,9 +317,9 @@ set nocompatible                          " be iMproved, required
             \   exe "normal! g`\"" |
             \ endif
 
-         if has("nvim")
-            autocmd VimEnter * :call deoplete#custom#source('_', 'smart_case', v:true)
-         endif
+         " if has("nvim")
+         "    autocmd VimEnter * :call deoplete#custom#source('_', 'smart_case', v:true)
+         " endif
 
       augroup END
 
@@ -224,133 +343,6 @@ set nocompatible                          " be iMproved, required
    if !exists(":DiffOrig")
       command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis
          \ | wincmd p | diffthis
-   endif
-   " }}}
-" Vundle {{{
-   filetype off                              " required
-
-   " set the runtime path to include Vundle and initialize
-   " TODO change this to have a has("nvim") specific setting
-   if has( "macunix" )
-      set rtp+=~/.vim/bundle/Vundle.vim
-      call vundle#begin()
-   elseif has( "unix" )
-      set rtp+=~/.vim/bundle/Vundle.vim
-      call vundle#begin()
-   elseif has( "win32" )
-      set rtp+=C:/Program\ Files\ (x86)/Vim/vimfiles/bundle/Vundle.vim
-      call vundle#begin('C:/Program\ Files\ (x86)/Vim/vimfiles')
-   else
-      :echo "Unhandled platform"
-   endif
-
-   " let Vundle manage Vundle, required
-   Plugin 'VundleVim/Vundle.vim'
-   Plugin 'kien/ctrlp.vim'
-      " {{{
-      let g:ctrlp_working_path_mode = 0      " Root directory will be manually set in local config
-      let g:ctrlp_by_filename = 1            " Search by filename by default
-      let g:ctrlp_map = '<c-p>'
-      let g:ctrlp_cmd = 'CtrlP'
-      let g:ctrlp_extensions = ['line']
-      let g:ctrlp_switch_buffer = 'e'        " only jump to an existing window if it's in the current tab
-      if executable('ag')
-         " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-         let g:ctrlp_user_command = 'ag -l --nocolor -g "" %s'
-
-         " ag is fast enough that CtrlP doesn't need to cache
-         let g:ctrlp_use_caching = 0
-      endif
-      " }}}
-   Plugin 'derekwyatt/vim-fswitch'
-      " {{{
-      nnoremap <leader>fs :FSHere<CR>
-      " }}}
-   Plugin 'majutsushi/tagbar'
-      " {{{
-      nnoremap <leader>tb :TagbarToggle<CR>
-      nnoremap <leader>tbp :TagbarTogglePause<CR>
-      let g:tagbar_autofocus = 1
-      " }}}
-   Plugin 'thinca/vim-visualstar'
-   " Plugin 'davidhalter/jedi-vim'
-   Plugin 'scrooloose/nerdtree'
-   if has("nvim")
-      Plugin 'Shougo/deoplete.nvim'
-         " {{{
-         let g:deoplete#enable_at_startup = 1
-         " }}}
-   endif
-   Plugin 'tpope/vim-commentary'
-      " {{{
-      augroup commentary
-         autocmd!
-         autocmd Filetype cpp setl commentstring=//%s
-      augroup END
-      " }}}
-   " Plugin 'tmhedberg/SimpylFold'      " Improved Python folding
-   " Plugin 'Konfekt/FastFold'
-   Plugin 'tpope/vim-unimpaired'
-   Plugin 'tpope/vim-dispatch'
-   if has("nvim")
-      " allows vim-dispatch to use neovim terminal
-      Plugin 'radenling/vim-dispatch-neovim'
-   endif
-   Plugin 'tpope/vim-surround'
-   Plugin 'vim-airline/vim-airline'
-      " {{{
-      let g:airline#extensions#tagbar#enabled = 0     " this integration is broken with the git commit message, so disable it
-      let g:airline_section_b = ''
-      let g:airline_section_x = ''
-      let g:airline_section_y = ''
-      let g:airline_section_error = ''
-      " }}}
-   Plugin 'vim-airline/vim-airline-themes'
-      " {{{
-      let g:airline_theme='light'
-      " }}}
-   Plugin 'tpope/vim-capslock'
-
-   " The snippet engine
-   " Plugin 'sirver/ultisnips'
-   " The snippet contents
-   Plugin 'honza/vim-snippets'
-      " {{{
-      let g:UltiSnipsExpandTrigger="<c-e>"
-      let g:UltiSnipsJumpForwardTrigger="<c-b>"
-      let g:UltiSnipsJumpBackwardTrigger="<c-z>"
-      " }}}
-   Plugin 'tpope/vim-repeat'
-   Plugin 'nvie/vim-flake8'
-   Plugin 'ervandew/supertab'
-      " {{{
-      " Go through completion menu from top to bottom
-      let g:SuperTabDefaultCompletionType = "<c-n>"
-      " }}}
-
-   " Haven't tried these yet
-   "Plugin 'mbbill/undotree'  # \u is what Joe uses to show it
-   "Plugin 'godlygeek/tabular'
-   "pep8
-   "Plugin 'ton/vim-bufsurf'
-      " {{{
-      " nnoremap <leader><C-o> :BufSurfBack<CR>
-      " nnoremap <leader><C-i> :BufSurfForward<CR>
-      " }}}
-   "Plugin 'vim-scripts/TagHighlight'
-   Plugin 'tpope/vim-fugitive'
-   "cross reference: opengrok or cscope
-
-   Plugin 'keith/swift.vim'
-   " Plugin 'inkarkat/vim-mark'
-
-   " All of your Plugins must be added before the following line
-   call vundle#end()                         " required
-   filetype plugin indent on                 " required
-
-   " Must be after vundle#end()
-   if has("nvim")
-      call deoplete#custom#source('_', 'smart_case', v:true)
    endif
    " }}}
 " Custom Mappings {{{
@@ -467,5 +459,5 @@ set nocompatible                          " be iMproved, required
 
 set exrc " Allow loading 'project' specific settings from working directory config files
 
-" vim: tabstop=3 softtabstop=3 shiftwidth=3 expandtab :
+" vim: tabstop=4 softtabstop=4 shiftwidth=4 expandtab :
 " vim: foldmethod=marker foldmarker={{{,}}} foldmethod=marker foldlevel=0 :
