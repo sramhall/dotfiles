@@ -15,18 +15,12 @@
 
     lbase = log --graph --decorate --branches --tags --remotes
     ll = lbase --pretty=fave
-    l = ll -20
+    l = ll -25
     lf = lbase --pretty=medium --stat
 [push]
     default = simple
 [color]
     ui = auto
-[difftool "sourcetree"]
-	cmd = /Applications/DiffMerge.app/Contents/MacOS/DiffMerge --nosplash \"$LOCAL\" \"$REMOTE\"
-	path = 
-[mergetool "sourcetree"]
-	cmd = /Applications/DiffMerge.app/Contents/MacOS/DiffMerge --nosplash --merge --result=\"$MERGED\" \"$LOCAL\" \"$BASE\" \"$REMOTE\"
-	trustExitCode = true
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f

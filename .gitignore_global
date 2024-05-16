@@ -28,6 +28,7 @@
 # c.f. http://www.westwind.com/reference/os-x/invisibles.html
 
 *.swp
+*.swo
 
 # vim
 _vimrc

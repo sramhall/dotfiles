@@ -99,6 +99,9 @@ endif
 
 
 Plug 'github/copilot.vim'
+Plug 'zbirenbaum/copilot.lua'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'CopilotC-Nvim/CopilotChat.nvim', { 'branch': 'canary' }
 
 "   " Haven't tried these yet
 "   "Plug 'mbbill/undotree'  # \u is what Joe uses to show it
@@ -317,9 +320,9 @@ call plug#end()
             \   exe "normal! g`\"" |
             \ endif
 
-         " if has("nvim")
-         "    autocmd VimEnter * :call deoplete#custom#source('_', 'smart_case', v:true)
-         " endif
+         if has("nvim")
+            autocmd VimEnter * :call deoplete#custom#source('_', 'smart_case', v:true)
+         endif
 
       augroup END
 
