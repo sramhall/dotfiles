@@ -79,8 +79,8 @@ Plug 't9md/vim-quickhl'
    " }}}
 Plug 'ton/vim-bufsurf'
    " {{{
-      nnoremap <leader><C-o> :BufSurfBack<CR>
-   " nnoremap <leader><C-i> :BufSurfForward<CR>
+      nnoremap [s :BufSurfBack<CR>
+      nnoremap ]s :BufSurfForward<CR>
    " }}}
 Plug 'tpope/vim-fugitive'
 
