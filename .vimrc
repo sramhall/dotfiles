@@ -14,7 +14,7 @@ endif
 
 call plug#begin()
 
-Plug 'kien/ctrlp.vim'
+Plug 'ctrlpvim/ctrlp.vim'
    " {{{
    let g:ctrlp_working_path_mode = 0      " Root directory will be manually set in local config
    let g:ctrlp_by_filename = 1            " Search by filename by default
@@ -22,11 +22,8 @@ Plug 'kien/ctrlp.vim'
    let g:ctrlp_cmd = 'CtrlP'
    let g:ctrlp_extensions = ['line']
    let g:ctrlp_switch_buffer = 'e'        " only jump to an existing window if it's in the current tab
-   if executable('ag')
-      " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-      let g:ctrlp_user_command = 'ag -l --nocolor -g "" %s'
-
-      " ag is fast enough that CtrlP doesn't need to cache
+   if executable('rg')
+      let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
       let g:ctrlp_use_caching = 0
    endif
    " }}}
@@ -244,8 +241,8 @@ call plug#end()
    endif
 
    " Use Ag for grep
-   if executable('ag')
-      set grepprg=ag\ --nogroup\ --nocolor\ --column
+   if executable('rg')
+      set grepprg=rg\ --color=never
    endif
    " }}}
 " Folding {{{
