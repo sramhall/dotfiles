@@ -127,7 +127,7 @@ call plug#end()
    set tags=tags;                            " http://vim.wikia.com/wiki/Single_tags_file_for_a_source_tree
    set autoread
    set nrformats=alpha,hex                   " for incrementing with CTRL-A, CTRL-X
-   " set hidden                                " hide buffers instead of closing them
+   set nohidden                              " never hide buffers (default is hidden)
    set foldopen+=jump foldopen-=block foldopen-=hor   " open folds for jumps, but not for block or horizontal movement
    set virtualedit=block                     " allow cursor to go where there is no character in visual block mode
    set directory=.                           " save .swp files in same directory as edited file
