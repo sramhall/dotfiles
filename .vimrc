@@ -97,7 +97,23 @@ endif
 
 Plug 'github/copilot.vim'
 Plug 'zbirenbaum/copilot.lua'
-Plug 'nvim-lua/plenary.nvim'
+
+" Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release' }
+" Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+" Plug 'nvim-lua/plenary.nvim'
+" Plug 'nvim-telescope/telescope.nvim' , { 'branch': '0.1.x' }
+"     " {{{
+"     nnoremap <leader>ff <cmd>Telescope find_files<cr>
+"     nnoremap <leader>fg <cmd>Telescope live_grep<cr>
+"     nnoremap <leader>fb <cmd>Telescope buffers<cr>
+"     nnoremap <leader>fh <cmd>Telescope help_tags<cr>
+"     nnoremap <leader>ft <cmd>Telescope tags<cr>
+"     " }}}
+" Plug 'nvim-telescope/telescope-file-browser.nvim'
+"     " {{{
+"     nnoremap <leader>fe <cmd>Telescope file_browser<cr>
+"     " }}}
+
 " Plug 'CopilotC-Nvim/CopilotChat.nvim', { 'branch': 'canary' }
 
 "   " Haven't tried these yet
@@ -107,6 +123,7 @@ Plug 'nvim-lua/plenary.nvim'
 "   "Plug 'vim-scripts/TagHighlight'
 
     " Removed
+"   Plug 'junegunn/fzf' " , { 'do': { -> fzf#install() } }
 "   Plug 'nvie/vim-flake8'
 "   " Plug 'davidhalter/jedi-vim'
 "   " Plug 'tmhedberg/SimpylFold'      " Improved Python folding
