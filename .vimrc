@@ -65,11 +65,11 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'tpope/vim-capslock'
 
 Plug 'tpope/vim-repeat'
-Plug 'ervandew/supertab'
-   " {{{
-   " Go through completion menu from top to bottom
-   let g:SuperTabDefaultCompletionType = "<c-n>"
-   " }}}
+" Plug 'ervandew/supertab'
+"    " {{{
+"    " Go through completion menu from top to bottom
+"    let g:SuperTabDefaultCompletionType = "<c-n>"
+"    " }}}
 Plug 't9md/vim-quickhl'
    " {{{
    nmap gm <Plug>(quickhl-manual-this)
