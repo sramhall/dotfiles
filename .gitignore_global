@@ -250,3 +250,4 @@ tags
 
 # Visual Studio Code
 *.code-workspace
+.vscode/**
