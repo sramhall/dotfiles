@@ -86,13 +86,13 @@ Plug 'tpope/vim-fugitive'
 
 Plug 'keith/swift.vim'
 
-if has("nvim")
-    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-        " {{{
-        let g:deoplete#enable_at_startup = 1
-        call deoplete#custom#source('_', 'smart_case', v:true)
-        " }}}
-endif
+" if has("nvim")
+"     Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+"         " {{{
+"         let g:deoplete#enable_at_startup = 1
+"         " call deoplete#custom#source('_', 'smart_case', v:true)
+"         " }}}
+" endif
 
 
 Plug 'github/copilot.vim'
@@ -335,7 +335,7 @@ call plug#end()
             \ endif
 
          if has("nvim")
-            autocmd VimEnter * :call deoplete#custom#source('_', 'smart_case', v:true)
+            " autocmd VimEnter * :call deoplete#custom#source('_', 'smart_case', v:true)
          endif
 
       augroup END
