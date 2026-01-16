@@ -71,6 +71,7 @@ DerivedData/
 
 build/
 
+*.xcarchive
 
 #####
 # Xcode private settings (window sizes, bookmarks, breakpoints, custom executables, smart groups)
@@ -251,3 +252,6 @@ tags
 # Visual Studio Code
 *.code-workspace
 .vscode/**
+
+# Claude Code
+.claude/
