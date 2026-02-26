@@ -52,11 +52,11 @@ Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-surround'
 Plug 'vim-airline/vim-airline'
    " {{{
-   let g:airline#extensions#tagbar#enabled = 0     " this integration is broken with the git commit message, so disable it
-   let g:airline_section_b = ''
-   let g:airline_section_x = ''
-   let g:airline_section_y = ''
-   let g:airline_section_error = ''
+   " let g:airline#extensions#tagbar#enabled = 0     " this integration is broken with the git commit message, so disable it
+   " let g:airline_section_b = ''
+   " let g:airline_section_x = ''
+   " let g:airline_section_y = ''
+   " let g:airline_section_error = ''
    " }}}
 Plug 'vim-airline/vim-airline-themes'
    " {{{
