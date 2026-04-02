@@ -253,5 +253,3 @@ tags
 *.code-workspace
 .vscode/**
 
-# Claude Code
-.claude/
