@@ -31,10 +31,14 @@ Be brutally honest. I'm a scientist — I need facts, not diplomacy.
 - Suggest a session name based on my prompt if the session is unnamed.
 - Plan names must be descriptive of the task (e.g., `auth-history-swiftdata-migration`), not randomly generated words.
 
-## Permissions
-Permission matching is prefix-based. `Bash(git add:*)` matches `git add foo`, NOT `git -C /path add foo`.
-- **Never use `git -C <path>`** — `cd` to the directory in one Bash call, then run git in the next. Working directory persists between calls.
-- **Never chain (`&&`, `||`, `;`), pipe (`|`), or redirect (`>`, `>>`, `2>&1`) commands** that have their own permission rules. Run them as separate Bash calls.
-- **Never use process substitution (`<(...)`)**, command substitution (`$(...)`), or shell expansion syntax in Bash commands. Use the Read tool or run commands separately. Prefer dedicated tools (Read, Glob, Grep) over Bash equivalents.
+## Permissions — IMPORTANT
+Permission matching is prefix-based. Each command must be its own Bash tool call. **Never** chain (`&&`, `||`, `;`), pipe (`|`), redirect (`>`, `2>&1`), use `git -C`, or use command/process substitution (`$(…)`, `<(…)`). These break prefix-based permission matching.
+| Wrong | Right (separate Bash calls) |
+|---|---|
+| `git -C /tmp/wt status` | `cd /tmp/wt` → `git status` |
+| `git add f && git commit -F m.txt` | `git add f` → `git commit -F m.txt` |
+| `git commit -m "$(cat msg.txt)"` | `git commit -F msg.txt` |
+| `echo "x" > file.txt` | Use the Write tool |
+- Prefer dedicated tools over Bash: Read (not cat), Grep (not grep/rg), Glob (not find/ls), Edit (not sed), Write (not echo >).
 - **Permission suggestions** must be general enough to help future runs. Not too specific (a single path), not too broad (`git:*`).
 - **Post-session**: If any permission prompts occurred, evaluate whether command construction could have avoided them, and walk the user through any new local permissions to decide if they should move to user-level.
