@@ -28,11 +28,13 @@ Be brutally honest. I'm a scientist — I need facts, not diplomacy.
 
 ## Workflow
 - If a shell command is noisy, use `run_in_background: true` on the Bash tool call and then search the output with Grep/Read rather than wasting context.
-- Suggest a session name based on my prompt if the session is unnamed.
-- Plan names must be descriptive of the task (e.g., `auth-history-swiftdata-migration`), not randomly generated words.
+- Set a session name based on my prompt if the session is unnamed.
+- Plan names must start with the date and be descriptive of the task (e.g., `auth-history-swiftdata-migration`), not randomly generated words.
 
-## Permissions — IMPORTANT
-Permission matching is prefix-based. Each command must be its own Bash tool call. **Never** chain (`&&`, `||`, `;`), pipe (`|`), redirect (`>`, `2>&1`), use `git -C`, or use command/process substitution (`$(…)`, `<(…)`). These break prefix-based permission matching.
+## Permissions — CRITICAL
+Permission matching is prefix-based. Compound commands always trigger a blocking permission prompt — this is the most disruptive mistake an agent can make. Your training will push you toward chaining and piping. Override that instinct.
+
+Each Bash tool call must be exactly one simple command. **Never** chain (`&&`, `||`, `;`), pipe (`|`), redirect (`>`, `2>&1`), use `git -C`, or use command/process substitution (`$(…)`, `<(…)`).
 | Wrong | Right (separate Bash calls) |
 |---|---|
 | `git -C /tmp/wt status` | `cd /tmp/wt` → `git status` |
