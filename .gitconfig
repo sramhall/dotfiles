@@ -32,3 +32,5 @@
 	fave = %C(auto)%h %s%C(auto)%d %C(bold magenta)<%an>
 [fetch]
 	prune = true
+[remote "origin"]
+	fetch = +refs/heads/master:refs/heads/master
